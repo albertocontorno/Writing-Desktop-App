@@ -1,0 +1,40 @@
+:host{
+  display: block;
+}
+
+.arrow{
+  font-size: 0.7rem;
+  padding-top: 3px;
+  margin-left: 5px;
+}
+
+.item{
+  padding-left: 5px;
+  /* transform: translate3d(0px, 0px, 0px) !important; */
+  border-top: 2px solid transparent;
+  border-bottom: 2px solid transparent;
+}
+.item:hover{
+  background-color: rgba(255, 255, 255, 0.123);
+}
+.item.selected{
+  background-color: rgba(80, 110, 141, 0.507);
+}
+.item.selected:hover{
+  background-color: rgba(80, 110, 141, 0.707);
+}
+/* .item.with-parent{
+  border-left: 1px solid rgba(255, 255, 255, 0.596);
+} */
+
+.invalid {
+  border: 1px solid red !important;
+  outline: red solid 1px !important;
+}
+
+.isDragUp{
+  border-top-color: aqua;
+}
+.isDragBelow{
+  border-bottom-color: aqua;
+}

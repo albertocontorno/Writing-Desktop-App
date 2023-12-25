@@ -1,0 +1,23 @@
+<div class="h-full">
+  <div class="title-bar"> 
+    <span>{{name}}</span>
+    <span class="inline-block" style="float: right">
+      <ng-container *ngIf="showAddActions">
+        <div class="inline-block cursor-pointer relative mr-1" (click)="addFolder()">
+          <i class="pi pi-folder cursor-pointer"></i>
+          <i class="pi pi-plus plus-icon"></i>
+        </div>
+        <div class="inline-block cursor-pointer relative mr-1" (click)="addFile()">
+          <i class="pi pi-file cursor-pointer"></i>
+          <i class="pi pi-plus plus-icon"></i>
+        </div>
+      </ng-container>
+      <i class="pi pi-clone cursor-pointer" (click)="collapseAll()"></i>
+    </span>
+  </div>
+  <div #hierarchyItems (click)="onContainerClicked()" class="h-full">
+    <app-hierarchy-menu-item *ngFor="let item of _items" [item]="item"></app-hierarchy-menu-item>
+  </div>
+</div>
+
+<p-contextMenu *ngIf="showContextMenu" [target]="hierarchyItems" [model]="contextMenu" #menu [appendTo]="'body'"></p-contextMenu>

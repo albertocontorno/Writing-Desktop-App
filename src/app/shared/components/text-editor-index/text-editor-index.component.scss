@@ -1,0 +1,17 @@
+.reference{
+  display: flex;
+  align-items: center;
+  padding: 0.1rem;
+  justify-content: space-between;
+  cursor: zoom-in;
+}
+.reference i{
+  padding: 3px 4px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.reference i:hover{
+  color: white;
+  background-color: #091a32;
+}
+

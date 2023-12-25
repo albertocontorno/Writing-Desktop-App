@@ -1,0 +1,18 @@
+<div [formGroup]="form">
+  <div class="flex flex-column gap-2">
+    <label htmlFor="username">Project Name</label>
+    <input type="text" pInputText formControlName="projectName"/>
+  </div>
+  
+  <div class="mt-3 flex align-items-center">
+    <p-button  (onClick)="openChooseDirectory()" class="mr-2">Choose Directory</p-button>
+    <span *ngIf="form?.controls?.directory?.value">{{form.controls.directory.value}}</span>
+  </div>
+
+  <p-messages *ngIf="showMessages" [value]="messages" [enableService]="false" [closable]="false"></p-messages>
+
+  <div class="mt-4 text-right">
+    <p-button icon="pi pi-check" [disabled]="!form.valid" (onClick)="confirm()" styleClass="p-button-success" label="Confirm"></p-button>
+  </div>
+
+</div>

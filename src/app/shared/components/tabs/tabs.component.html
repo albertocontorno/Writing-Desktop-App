@@ -1,0 +1,22 @@
+<div 
+  class="flex tab-container" 
+  style="border-bottom: 1px solid darkblue;" 
+  cdkDropList
+  (cdkDropListDropped)="drop($event)"
+  cdkDropListOrientation="horizontal"
+>
+  <div 
+    *ngFor="let tab of tabs; let i = index;"
+    class="tab cursor-pointer flex align-items-center"
+    [ngClass]="{'active': activeTabIndex === i}"
+    (click)="tabClicked(i, tab)"
+    cdkDrag
+    cdkDragBoundary=".tab-container"
+    cdkDragLockAxis="x"
+  >
+    <div>{{ tab.name }}</div>
+    <div class="drag-preview" *cdkDragPreview >{{ tab.name }}</div>
+    <div class="ml-3 close-btn" (click)="closeTab(i, tab)"><i class="pi pi-times" style="font-size: 0.75rem;"></i></div>
+  </div>
+</div>
+

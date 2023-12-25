@@ -1,0 +1,27 @@
+.tab{
+  border-right: 1px solid white;
+  padding: 5px;
+  /* transform: translate3d(0px, 0px, 0px) !important; */
+}
+.tab.active{
+  background-color: rgba(0, 68, 255, 0.267);
+}
+.tab:hover{
+  background-color: rgba(255, 255, 255, 0.096);
+}
+.close-btn{
+  width: 21px;
+  height: 21px;
+  text-align: center;
+  border-radius: 50%;
+}
+.close-btn:hover{
+  background-color: rgba(255, 255, 255, 0.288);
+}
+
+.drag-preview{
+  background-color: rgba(43, 43, 238, 0.37);
+  border: 1px dotted white;
+  border-radius: 3px;
+  padding: 2px;
+}

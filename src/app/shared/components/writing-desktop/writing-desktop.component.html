@@ -1,0 +1,90 @@
+<p-splitter  *ngIf="project" [style]="{'height': 'calc(100vh - 50px)'}" [panelSizes]="[20,80]" [minSizes]="[10,80]">
+  <ng-template pTemplate>
+    <p-splitter [style]="{'height': '800px'}" [panelSizes]="[50,50]" [minSizes]="[20,20]">
+
+      <ng-template pTemplate>
+        <app-hierarchy-menu 
+          style="width: 100%;"
+          [items]="project.files"
+          [updateCollapsedOnItem]="true"
+          (init)="onHierarchyMenuInit($event)"
+          (openItem)="openItem($event)"
+          (itemDeleted)="onItemDeleted($event)"
+        ></app-hierarchy-menu>
+      </ng-template>
+
+      <ng-template pTemplate>
+        <app-text-editor-index
+          *ngIf="currentOpenedPage"
+          style="width: 100%;"
+          [blocks]="currentOpenedPage.data"
+          (nodeSelected)="onNodeSelected($event)"
+      ></app-text-editor-index>
+      </ng-template>
+    </p-splitter>
+
+  </ng-template>
+
+  <ng-template pTemplate>
+    <p-splitter [style]="{'height': '800px'}" [panelSizes]="[80,20]" [minSizes]="[60,20]">
+      <ng-template pTemplate>
+        <div class="main-text-editor-wrapper flex flex-column">
+          <app-tabs [tabs]="openedFiles" [activeTabIndex]="currentOpenedPageIndex" (onCloseTab)="closeFile($event)" (onTabClicked)="openFile($event)"></app-tabs>
+          <div class="text-editor-menu"><p-menubar [model]="editorMenu"></p-menubar></div>
+          <app-editor
+            *ngIf="currentOpenedPage"
+            [data]="currentOpenedPage.data"
+            [pageId]="currentOpenedPage.id"
+            (editorReady)="onMainEditorReady($event)"
+            (dataChanged)="onEditorDataChange($event)"
+          ></app-editor>
+          <!-- <div class="flex pl-5 pr-7"> 
+            <div style="width: 100%;">
+              <p-tabMenu *ngIf="tabmenu" [model]="tabmenu" [scrollable]="true" #tabs [activeItem]="tabmenu[0]"></p-tabMenu>
+            </div>
+            <button class="ml-1" style="border-style: solid;" type="button" (click)="addPage()"> <i class="pi pi-plus"></i></button>
+          </div> -->
+        </div>
+      </ng-template>
+      <ng-template pTemplate>
+        <div style="width: 100%">
+          <!-- <app-text-editor-extras [notes]="project.notes"></app-text-editor-extras> -->
+        </div>
+      </ng-template>
+    </p-splitter>
+  </ng-template>
+
+</p-splitter>
+
+<!-- REFERENCE -->
+<p-dialog header="Choose Reference" [(visible)]="isReferenceChooseVisible" [style]="{width: '50vw'}" [modal]="true" (onHide)="selectedReference = undefined">
+  <!-- <app-hierarchy-menu [items]="project.files" (itemSelected)="onReferenceSelected($event)" [showContextMenu]="false" [showAddActions]="false" [enableDragAndDrop]="false"></app-hierarchy-menu>
+  <ng-template pTemplate="footer">
+    <button pButton type="button" label="Create" class="p-button-success" [disabled]="!selectedReference" (click)="selectReference()"></button>
+    <button pButton type="button" label="Cancel" class="p-button-danger" (click)="isReferenceChooseVisible = false; selectedReference = undefined"></button>
+  </ng-template> -->
+</p-dialog>
+
+<p-overlayPanel #referenceOP>
+  <ng-template pTemplate>
+    <ng-container *ngIf="currentReference">
+      <!-- <app-text-editor class="flex-grow-1" [blocks]="currentReference.blocks"></app-text-editor> -->
+    </ng-container>
+    <div *ngIf="!currentReference">The reference doesn't exist!</div>
+  </ng-template>
+</p-overlayPanel>
+
+<!-- NOTES -->
+
+<p-dialog header="Create Note" [(visible)]="isNoteCreationVisible" [style]="{width: '60vw'}" [modal]="true">
+  <ng-container *ngIf="newNote">
+    <label for="refTitle" class="mr-2">Note Title</label>
+    <input type="text" pInputText [(ngModel)]="newNote.title" id="refTitle"/>
+    <br><br>
+    <!-- <app-text-editor class="flex-grow-1" [blocks]="newNote.blocks ||  []"></app-text-editor> -->
+  </ng-container>
+  <ng-template pTemplate="footer">
+    <button pButton type="button" label="Create" class="p-button-success" [disabled]="!newNote?.title" (click)="createNote()"></button>
+    <button pButton type="button" label="Cancel" class="p-button-danger" (click)="closeCreateNote()"></button>
+  </ng-template>
+</p-dialog>

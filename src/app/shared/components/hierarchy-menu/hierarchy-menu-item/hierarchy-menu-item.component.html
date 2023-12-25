@@ -1,0 +1,49 @@
+<div 
+  *ngIf="item.type === 'FILE'"
+  class="flex align-items-center cursor-pointer item prevent-select"
+  [ngClass]="{'with-parent': hasParent, 'selected': isSelected, 'isDragUp': isDragUp, 'isDragBelow': isDragBelow}"
+  (click)="onItemSelected($event)"
+  (dblclick)="onOpenItem()"
+  (contextmenu)="onItemSelected()"
+  role="button"
+  tabindex="0"
+  [title]="item.name"
+  [draggable]="enableDragAndDrop"
+  (dragstart)="onDragStart($event, item)"
+  (dragend)="onDragEnd($event)"
+  (dragover)="onDragOver($event)"
+  (dragleave)="onDragLeave($event)"
+  (drop)="drop($event)"
+>
+  <i class="pi pi-file"></i> 
+  <span *ngIf="!isEditing">&nbsp;{{item.name}}</span>
+  <input *ngIf="isEditing" (blur)="onBlur($event)" pAutoFocus [autofocus]="true" (input)="onInput($event)" [ngClass]="{'invalid': isInvalid}" [value]="item.name">
+</div>
+
+<ng-container *ngIf="item.type === 'FOLDER'">
+  <div 
+    class="flex align-items-center cursor-pointer item prevent-select" 
+    [ngClass]="{'with-parent': hasParent, 'selected': isSelected, 'isDragUp': isDragUp, 'isDragBelow': isDragBelow}"
+    (click)="onItemSelected($event, true)"
+    (contextmenu)="onItemSelected()"
+    role="button"
+    tabindex="0"
+    [draggable]="enableDragAndDrop"
+    (dragstart)="onDragStart($event, item)"
+    (dragend)="onDragEnd($event)"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave($event)"
+    (drop)="drop($event)"
+  >
+    <i class="pi" [ngClass]="{'pi-folder': collapsed, 'pi-folder-open': !collapsed}"></i>
+    <span *ngIf="!isEditing">&nbsp;{{item.name}} </span>
+    <input *ngIf="isEditing" (blur)="onBlur($event)" pAutoFocus [autofocus]="true" (input)="onInput($event)" [ngClass]="{'invalid': isInvalid}" [value]="item.name">
+    <i *ngIf="!isEditing" class="pi arrow" [ngClass]="{'pi-chevron-right': collapsed, 'pi-chevron-down': !collapsed}"></i>
+  </div>
+
+  <div *ngIf="!collapsed" class="ml-3">
+    <app-hierarchy-menu-item *ngFor="let child of item.children" [item]="child" [collapsed]="child.collapsed" [hasParent]="true"></app-hierarchy-menu-item>
+  </div>
+
+</ng-container>
+
