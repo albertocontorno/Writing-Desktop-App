@@ -1,0 +1,18 @@
+<p-dialog [header]="(isUpdate ? 'NOTES.EDIT' : 'NOTES.CREATE') | translate" [(visible)]="visible" [style]="{width: '60vw'}" [modal]="true" (onHide)="closeCreateNote()">
+  <form [formGroup]="form">
+    <label for="refTitle" class="mr-2">Note Title</label>
+    <input type="text" pInputText formControlName="title" id="refTitle"/>
+    <br><br>
+    <app-editor
+      *ngIf="_note"
+      [pageId]="_note!.id"
+      [data]="_note.data"
+      [id]="'edit-note'"
+      (editorReady)="onNoteEditorReady($event)"
+    ></app-editor>
+  </form>
+  <ng-template pTemplate="footer">
+    <button pButton type="button" [label]="(isUpdate ? 'COMMON.EDIT' : 'COMMON.CREATE') | translate" class="p-button-success" [disabled]="!form.valid" (click)="onConfirm()"></button>
+    <button pButton type="button" label="Cancel" class="p-button-danger" (click)="closeCreateNote()"></button>
+  </ng-template>
+</p-dialog>

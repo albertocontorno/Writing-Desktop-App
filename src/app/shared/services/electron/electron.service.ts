@@ -77,7 +77,7 @@ export class ElectronService {
     return defer(() => new Promise<string>((resolve) => {
       path = `${path}`;/* .txt */
       this.ipcRenderer.once(`create-file-${requestId}-reply`, (_, result: string) => {
-        console.log(`create-file-${requestId}-reply`, path);
+        console.log(`create-file-${requestId}-reply`, path, _, result);
         resolve(result);
       });
 
@@ -90,7 +90,7 @@ export class ElectronService {
     return defer(() => new Promise<string>((resolve) => {
       path = `${path}`;
       this.ipcRenderer.once(`update-file-${requestId}-reply`, (_, result: string) => {
-        console.log(`update-file-${requestId}-reply`, path);
+        console.log(`update-file-${requestId}-reply`, path, _, result);
         resolve(result);
       });
 
@@ -143,7 +143,7 @@ export class ElectronService {
       });
 
       this.ipcRenderer.send('rename-file-folder', oldPath, newPath, requestId);
-    })).pipe(take(1));
+    }))/* .pipe(take(1)); */
   }
 
   moveFilerOrFolder(oldPath: string, newPath: string): Observable<string>{

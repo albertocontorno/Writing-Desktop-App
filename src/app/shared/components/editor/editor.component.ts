@@ -6,8 +6,8 @@ import List from '@editorjs/list';
 import { ReferenceTool } from './ReferenceTool/ReferenceTool';
 import { HistoryPlugin } from './plugins/History/HistoryPlugin';
 import { DataChangeEvent } from './models/DataChangeEvent.model';
-import { HistoryEntry } from './plugins/History/HistoryEntry.model';
-
+import DragDrop from 'editorjs-drag-drop';
+import { ProjectService } from '../../services/project.service';
 @Component({
   selector: 'app-editor',
   templateUrl: './editor.component.html',
@@ -18,14 +18,14 @@ export class EditorComponent implements OnInit {
   @Input() data: OutputData;
   @Input() pageId: string;
 
-  @Output() editorReady: EventEmitter<EditorJS> = new EventEmitter<EditorJS>();
-  @Output() dataChanged: EventEmitter<DataChangeEvent> = new EventEmitter<DataChangeEvent>();
+  @Output() editorReady: EventEmitter<EditorJS> = new EventEmitter();
+  @Output() dataChanged: EventEmitter<DataChangeEvent> = new EventEmitter();
 
   editor: EditorJS;
 
   history: HistoryPlugin;
   @ViewChild('holder', {static: true}) holder: ElementRef;
-  constructor(private editorService: EditorService) { }
+  constructor(private editorService: EditorService, private projectService: ProjectService) { }
 
   ngOnInit(): void {
     
@@ -38,7 +38,11 @@ export class EditorComponent implements OnInit {
         this.editor.clear();
         this.history.init();
       } else {
-        this.editor.render(changes.data.currentValue);
+        this.editor.render(changes.data.currentValue).then( _ => {
+          this.holder.nativeElement.querySelectorAll('.ed-reference').forEach( ref => {
+            ref.addEventListener('click', (e) => this.projectService.openReference$.next(e));
+          });
+        });
         const historyInfo = this.editorService.getHistory(changes.pageId?.currentValue);
         this.history.init(changes.data.currentValue, historyInfo?.currentIndex, historyInfo?.history);
       }
@@ -48,22 +52,40 @@ export class EditorComponent implements OnInit {
   ngAfterViewInit(){
     this.editor = new EditorJS({
       data: this.data,
-      holder: this.id, 
+      holder: this.id,
       tools: { 
-        header: Header, 
-        list: List,
-        reference: ReferenceTool
+        header: {
+          class: Header,
+          inlineToolbar: ['italic'/* , 'reference' */]
+        },
+        list: {
+          class: List,
+          inlineToolbar: ['bold', 'italic'/* , 'reference' */],
+        },
+        reference: {
+          class: ReferenceTool,
+          config: {
+            getService: () => this.projectService
+          }
+        }
       },
+      inlineToolbar: true,
       onChange: (api, changes) => {
         this.history.onChanges(api, changes);
         this.dataChanged.emit({
           api,
-          changes: !Array.isArray(changes) ? [changes] : changes
+          changes: !Array.isArray(changes) ? [changes] : changes,
+          history: this.history
         });
       },
       onReady: () => {
         this.history = new HistoryPlugin(this.editor, this.holder.nativeElement, this.data);
         this.editorService.setHistoryPlugin(this.history);
+        new DragDrop(this.editor);
+        this.holder.nativeElement.querySelectorAll('.ed-reference').forEach( ref => {
+          ref.addEventListener('click', (e) => this.projectService.openReference$.next(e));
+        });
+        
         this.editorReady.emit(this.editor);
       }
     });

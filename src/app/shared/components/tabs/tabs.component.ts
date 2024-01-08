@@ -1,5 +1,6 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-tabs',
@@ -13,7 +14,7 @@ export class TabsComponent implements OnInit {
   @Output() onTabClicked: EventEmitter<any> = new EventEmitter();
   @Output() onCloseTab: EventEmitter<any> = new EventEmitter();
 
-  constructor() { }
+  constructor(private confirmationService: ConfirmationService) { }
 
   ngOnInit(): void {
   }
@@ -23,8 +24,19 @@ export class TabsComponent implements OnInit {
     this.onTabClicked.next({index, tab});
   }
 
-  closeTab(index: number, tab){
-    this.onCloseTab.next({index, tab});
+  closeTab(index: number, tab, e){
+    if(tab.hasChanges){
+      this.confirmationService.confirm({
+        target: e.target as EventTarget,
+        message: 'There are some changes. Do you want to close it?',
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+          this.onCloseTab.next({index, tab});
+        }
+    });
+    } else {
+      this.onCloseTab.next({index, tab});
+    }
   }
 
   drop(event: CdkDragDrop<string[]>) {

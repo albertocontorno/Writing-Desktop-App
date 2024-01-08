@@ -87,6 +87,16 @@ html, body{
 }
 
 
+/* SPLITTER */
+.p-splitter{
+  border-radius: 0 !important;
+}
+
+.p-scrollpanel-bar{
+  border-radius: 0px !important;
+}
+
+
 
 /* .p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-link .p-menuitem-icon {
   margin-right: 0rem !important;
@@ -128,8 +138,15 @@ html, body{
 }
 
 .ed-reference{
-  background-color: rgb(90, 90, 90);
-  text-decoration: wavy;
+  text-decoration: underline;
+  text-decoration-style: dashed;
+  text-decoration-color: orange;
+  text-decoration-thickness: 3px;
+  cursor: pointer;
+}
+
+.referenceOverlay{
+  min-width: 850px;
 }
 
 /* .ce-block__content{

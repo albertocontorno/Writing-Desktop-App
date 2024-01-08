@@ -12,7 +12,7 @@ export interface Project{
   id: string;
   name: string;
   extras?: any;
-  notes: TextEditorNote[];
+  notes: ProjectNote[];
   files: ProjectFile[];
   references?: any[];
   rootPath: string;
@@ -26,7 +26,6 @@ export interface ProjectFile{
   collapsed?: boolean;
   icon?: string;
   children?: ProjectFile[];
-  blocks?: any[];
   isEditing?: boolean;// internal
   position: number;
   
@@ -38,10 +37,11 @@ export interface TextEditorPage {
   position: number;
   blocks: any[];
 }
-export interface TextEditorNote {
+export interface ProjectNote {
   id: string;
   title: string;
-  blocks?: any[];
+  position: number;
+  data?: any; // internal
 }
 export interface TextEditorIndex {
   id: string;

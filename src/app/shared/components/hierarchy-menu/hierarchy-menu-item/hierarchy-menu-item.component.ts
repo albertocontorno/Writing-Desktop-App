@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output, EventEmitter, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, OnInit} from '@angular/core';
 import { HierarchyMenuService } from '../hierarchy-menu.service';
 import { ProjectFile } from '../../../models/project.model';
 import { ProjectService } from '../../../services/project.service';

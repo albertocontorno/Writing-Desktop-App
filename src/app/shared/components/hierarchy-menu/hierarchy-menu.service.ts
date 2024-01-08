@@ -181,7 +181,6 @@ export class HierarchyMenuService {
       id: generateUUID(),
       type: type,
       path: '',
-      blocks: [],
       children: [],
       position: 0,
       data: { blocks: [] }

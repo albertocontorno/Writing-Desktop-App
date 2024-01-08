@@ -9,7 +9,7 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { PageNotFoundComponent } from './components/';
 import { WebviewDirective } from './directives/';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TextEditorIndexComponent } from './components/text-editor-index/text-editor-index.component';
 import { WritingDesktopComponent } from './components/writing-desktop/writing-desktop.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -30,12 +30,14 @@ import { TreeModule } from 'primeng/tree';
 import { SplitterModule } from 'primeng/splitter';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
 import { AlertServiceService } from './services/alert-service.service';
 import { ExecutePipe } from './pipes/execute.pipe';
+import { NotesContainerComponent } from './components/writing-desktop/notes-container/notes-container.component';
+import { FormNoteComponent } from './components/writing-desktop/form-note/form-note.component';
 
 @NgModule({
   declarations: [
@@ -48,12 +50,15 @@ import { ExecutePipe } from './pipes/execute.pipe';
     TextEditorIndexComponent,
     WritingDesktopComponent,
     ExecutePipe,
+    NotesContainerComponent,
+    FormNoteComponent,
   ],
-  providers: [DialogService, MessageService, AlertServiceService],
+  providers: [DialogService, MessageService, AlertServiceService, ConfirmationService],
   imports: [
     CommonModule,
     TranslateModule,
     FormsModule,
+    ReactiveFormsModule,
     MenubarModule,
     PanelModule,
     ButtonModule,

@@ -1,6 +1,6 @@
 import {app, BrowserWindow, screen, ipcMain, dialog, ipcRenderer} from 'electron';
 import * as path from 'path';
-import * as fs from 'fs/promises';
+import * as fs from 'node:fs/promises';
 import * as fsL from 'fs';
 import * as fsExtra from 'fs-extra';
 import { randomUUID } from 'crypto';
@@ -28,6 +28,8 @@ function createWindow(): BrowserWindow {
       contextIsolation: false,
     },
   });
+
+  win.setMenu(null);
 
   if (serve) {
     const debug = require('electron-debug');
@@ -96,51 +98,51 @@ ipcMain.on('read-file', (event, path: string, requestId: string, encoding: strin
 });
 
 ipcMain.on('create-file', (event, path: string, requestId: string, encoding: BufferEncoding = 'utf-8') => {
-  fs.writeFile(path, '', { encoding }).then( file => {
+  fs.writeFile(path, '', { encoding }).then( _ => {
     console.log(`create-file-${requestId}-reply`)
-    event.reply(`create-file-${requestId}-reply`, file);
+    event.reply(`create-file-${requestId}-reply`, path);
   });
 });
 
 ipcMain.on('update-file', (event, path: string, content: string, requestId: string, encoding: BufferEncoding = 'utf-8') => {
-  fs.writeFile(path, content, { encoding }).then( file => {
+  fs.writeFile(path, content, { encoding }).then( _ => {
     console.log(`update-file-${requestId}-reply`)
-    event.reply(`update-file-${requestId}-reply`, file);
+    event.reply(`update-file-${requestId}-reply`, content);
   });
 });
 
 ipcMain.on('remove-file', (event, path: string, requestId: string) => {
-  fs.rm(path).then( file => {
+  fs.rm(path).then( _ => {
     console.log(`remove-file-${requestId}-reply`)
-    event.reply(`remove-file-${requestId}-reply`, file);
+    event.reply(`remove-file-${requestId}-reply`, path);
   });
 });
 
 ipcMain.on('create-directory', (event, path: string, requestId: string) => {
-  fs.mkdir(path).then( directory => {
+  fs.mkdir(path).then( _ => {
     console.log(`create-directory-${requestId}-reply`)
-    event.reply(`create-directory-${requestId}-reply`, directory);
+    event.reply(`create-directory-${requestId}-reply`, path);
   });
 });
 
 ipcMain.on('remove-directory', (event, path: string, requestId: string) => {
-  fs.rmdir(path, {recursive: true}).then( directory => {
+  fs.rmdir(path, {recursive: true}).then( _ => {
     console.log(`remove-directory-${requestId}-reply`)
-    event.reply(`remove-directory-${requestId}-reply`, directory);
+    event.reply(`remove-directory-${requestId}-reply`, path);
   });
 });
 
 ipcMain.on('rename-file-folder', (event, oldPath: string, newPath: string, requestId: string) => {
-  fs.rename(oldPath, newPath).then( file => {
-    console.log(`rename-file--folder${requestId}-reply`)
-    event.reply(`rename-file--folder${requestId}-reply`, file);
+  fs.rename(oldPath, newPath).then( _ => {
+    console.log(`rename-file-folder-${requestId}-reply`)
+    event.reply(`rename-file-folder-${requestId}-reply`, newPath);
   });
 });
 
 ipcMain.on('move-file-folder', (event, oldPath: string, newPath: string, requestId: string) => {
-  fsExtra.move(oldPath, newPath).then( file => {
+  fsExtra.move(oldPath, newPath).then( _ => {
     console.log(`move-file-folder-${requestId}-reply`)
-    event.reply(`move-file-folder-${requestId}-reply`, file);
+    event.reply(`move-file-folder-${requestId}-reply`, newPath);
   });
 });
 

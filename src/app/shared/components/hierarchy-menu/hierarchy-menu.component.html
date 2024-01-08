@@ -1,4 +1,4 @@
-<div class="h-full">
+<div>
   <div class="title-bar"> 
     <span>{{name}}</span>
     <span class="inline-block" style="float: right">
@@ -15,9 +15,11 @@
       <i class="pi pi-clone cursor-pointer" (click)="collapseAll()"></i>
     </span>
   </div>
-  <div #hierarchyItems (click)="onContainerClicked()" class="h-full">
-    <app-hierarchy-menu-item *ngFor="let item of _items" [item]="item"></app-hierarchy-menu-item>
-  </div>
+  <p-scrollPanel [style]="{width: '100%', height: 'calc(100vh - 34px - 22px)'}" >
+    <div #hierarchyItems (click)="onContainerClicked()" style="width: 100%; height: 100%">
+      <app-hierarchy-menu-item *ngFor="let item of _items" [item]="item"></app-hierarchy-menu-item>
+    </div>
+  </p-scrollPanel>
 </div>
 
 <p-contextMenu *ngIf="showContextMenu" [target]="hierarchyItems" [model]="contextMenu" #menu [appendTo]="'body'"></p-contextMenu>

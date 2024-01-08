@@ -1,7 +1,13 @@
 {
   "COMMON": {
     "SUCCESS": "Success",
-    "ERROR": "Error"
+    "ERROR": "Error",
+    "CREATE": "Create",
+    "SAVE": "Save",
+    "UPDATE": "Update",
+    "EDIT": "Edit",
+    "DELETE": "Delete",
+    "REMOVE": "Remove"
   },
   "PAGES": {
       "HOME": {
@@ -17,5 +23,11 @@
     "CREATION": {
       "SUCCESS": "Project {{name}} created"
     }
+  },
+  "NOTES": {
+    "CREATE": "Create Note",
+    "CREATION_SUCCESS": "Note created",
+    "EDIT": "Edit Note",
+    "EDIT_SUCCESS": "Note edited"
   }
 }
