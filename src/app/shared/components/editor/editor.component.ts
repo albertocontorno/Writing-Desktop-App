@@ -17,6 +17,7 @@ export class EditorComponent implements OnInit {
   @Input() id = 'editorjs';
   @Input() data: OutputData;
   @Input() pageId: string;
+  @Input() maxHeightStyle: string = 'calc(100vh - 103px)';
 
   @Output() editorReady: EventEmitter<EditorJS> = new EventEmitter();
   @Output() dataChanged: EventEmitter<DataChangeEvent> = new EventEmitter();
@@ -85,7 +86,7 @@ export class EditorComponent implements OnInit {
         this.holder.nativeElement.querySelectorAll('.ed-reference').forEach( ref => {
           ref.addEventListener('click', (e) => this.projectService.openReference$.next(e));
         });
-        
+                
         this.editorReady.emit(this.editor);
       }
     });
@@ -93,7 +94,7 @@ export class EditorComponent implements OnInit {
 
   save(){
     this.editor.save().then((outputData) => {
-      console.log('Article data: ', outputData);
+      console.error('Data: ', outputData);
     }).catch((error) => {
       console.error('Saving failed: ', error);
     });

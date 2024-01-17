@@ -43,27 +43,11 @@ export class WritingDesktopComponent {
   editorMenu = [
     {
       label: 'Save',
-      command: () => {
-        console.log(this.currentOpenedPage);
-        if(this.currentOpenedPage){
-          this.currentOpenedPage.hasChanges = false;
-          this.mainEditor.save().then( (data) => {
-            const payload = {
-              id: this.currentOpenedPage!.id,
-              ...data,
-            };
-            this.projectService.saveFile(this.currentOpenedPage!.path, payload).subscribe( res => {
-              console.log('File', this.currentOpenedPage!.path, 'saved', res);
-            })
-          } );
-        }
-      }
+      command: () => this.saveCurrentPage()
     },
     {
       label: 'Add Note',
-      command: () => {
-        this.openCreateNote();
-      }
+      command: () => this.openCreateNote()
     }
   ]
   isReferenceChooseVisible;
@@ -85,6 +69,14 @@ export class WritingDesktopComponent {
     this.projectService.openReference$.subscribe( e => {
       this.openReference(e);
     });
+
+    document.addEventListener('keydown', this.saveKeyDown);
+  }
+
+  saveKeyDown = (e) => {
+    if(e.ctrlKey && (e.key === 's' || e.key === 'S')){
+      this.saveCurrentPage()
+    }
   }
 
   onHierarchyMenuInit(hierarchyMenuService: HierarchyMenuService){
@@ -142,16 +134,25 @@ export class WritingDesktopComponent {
   }
 
   closeFile({tab: item}: {tab: OpenedPage}){
-     const itemIndex = this.openedFiles.findIndex( f => f === item);
-    this.openedFiles.splice(itemIndex, 1);
+    const itemIndex = this.openedFiles.findIndex( f => f.id === item.id );
+    if(itemIndex > -1){
+      this.openedFiles.splice(itemIndex, 1);
+    }
     if(this.openedFiles.length === 0){
       this.currentOpenedPage = undefined;
     }
     if(this.currentOpenedPage === this.openedFilesMaps[item.id]){
+      // the current page was closed
       if(itemIndex < this.openedFiles.length - 1){
         this.currentOpenedPage = this.openedFilesMaps[this.openedFiles[itemIndex].id];
       } else {
         this.currentOpenedPage = this.openedFilesMaps[this.openedFiles[this.openedFiles.length-1].id];
+      }
+    } else {
+      if(itemIndex > this.openedFiles.length - 1){
+        this.currentOpenedPage = this.openedFilesMaps[this.openedFiles[this.openedFiles.length-1].id];
+      } else {
+        this.currentOpenedPage = this.currentOpenedPage;
       }
     }
     this.editorService.deleteHistory(item.id);
@@ -236,8 +237,23 @@ export class WritingDesktopComponent {
     return files;
   }
 
-  ngOnDestroy(){
+  saveCurrentPage(){
+    if(this.currentOpenedPage){
+      this.currentOpenedPage.hasChanges = false;
+      this.mainEditor.save().then( (data) => {
+        const payload = {
+          id: this.currentOpenedPage!.id,
+          ...data,
+        };
+        this.projectService.saveFile(this.currentOpenedPage!.path, payload).subscribe( res => {
+          console.log('File', this.currentOpenedPage!.path, 'saved', res);
+        })
+      } );
+    }
+  }
 
+  ngOnDestroy(){
+    document.removeEventListener('keydown', this.saveKeyDown);
   }
 
 }

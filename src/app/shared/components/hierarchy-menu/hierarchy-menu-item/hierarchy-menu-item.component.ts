@@ -89,7 +89,6 @@ export class HierarchyMenuItemComponent implements OnInit {
       }
     } else {
       // rename
-      console.log('oldPath', oldPath, 'newPAth', this.item.path);
       this.projectService.renameFilerOrFolder(oldPath, this.item.path);
     }
   }

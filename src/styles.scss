@@ -11,6 +11,10 @@ html, body{
   padding: 0 !important;
 }
 
+body {
+  overflow: hidden;
+}
+
 .text-editor-reference{
   cursor: pointer;
   font-weight: bold;

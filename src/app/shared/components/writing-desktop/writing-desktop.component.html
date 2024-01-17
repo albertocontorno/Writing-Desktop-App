@@ -73,8 +73,9 @@
       <app-editor
         *ngIf="currentReference"
         [data]="currentReference"
-        [pageId]="currentReference.id + '45'"
+        [pageId]="currentReference.id + '_reference'"
         [id]="currentReference.id"
+        [maxHeightStyle]="'500px'"
       ></app-editor>
     </ng-container>
     <div *ngIf="!currentReference">The reference doesn't exist!</div>
