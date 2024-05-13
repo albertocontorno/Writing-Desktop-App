@@ -8,7 +8,6 @@ import { Project, ProjectFile, ProjectNote } from '../models/project.model';
 import { ProjectInfoChanges } from '../models/internals/ProjectInfoChanges.model';
 import { FolderStructure } from '../../../../app/models/FolderStructure.model';
 import { generateUUID } from '../utils/utils';
-import { OutputData } from '@editorjs/editorjs';
 
 @Injectable({
   providedIn: 'root'
@@ -110,11 +109,11 @@ export class ProjectService {
     return this.electronService.writeFile(path, JSON.stringify(payload));
   }
 
-  createNote(note: ProjectNote, data: OutputData){
+  createNote(note: ProjectNote, data: any){
     const id = generateUUID();
     return this.saveNote(note.title.toLowerCase().replace(/\s/g, '_'), {
         id: note.id,
-        ...data
+        data
       }).pipe(
         concatMap( res => {
         this.project.notes.push(note);
@@ -133,6 +132,7 @@ export class ProjectService {
     if(oldTitle !== newTitle){
       const oldPath = `${path}${oldTitle.toLowerCase().replace(/\s/g, '_')}`;
       const newPath = `${path}${newTitle.toLowerCase().replace(/\s/g, '_')}`;
+      this.project.notes.find(n => n.id == note.id)!.path = '/' + newTitle.toLowerCase().replace(/\s/g, '_');
       return this.electronService.renameFilerOrFolder(oldPath, newPath).pipe(
         concatMap(
           _ => {

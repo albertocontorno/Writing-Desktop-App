@@ -1,4 +1,3 @@
-import EditorJS, { OutputData } from '@editorjs/editorjs';
 import { Component, ViewChild } from '@angular/core';
 import { ProjectService } from '../../services/project.service';
 import { Project, ProjectFile, ProjectNote } from '../../models/project.model';
@@ -7,14 +6,16 @@ import { DataChangeEvent } from '../editor/models/DataChangeEvent.model';
 import { HistoryChacheEntry } from '../../models/internals/HistoryCache.model';
 import { generateUUID } from '../../utils/utils';
 import { HierarchyMenuService } from '../hierarchy-menu/hierarchy-menu.service';
+import SunEditor from 'suneditor/src/lib/core';
 
 interface OpenedPage {
   id: string,
   path: string,
   name: string,
-  data: OutputData,
+  data: any,
   history?: HistoryChacheEntry,
   hasChanges: boolean;
+  lastSavedIndex: number;
 }
 
 @Component({
@@ -39,7 +40,7 @@ export class WritingDesktopComponent {
   get currentOpenedPage(): OpenedPage | undefined{
     return this._currentOpenedPage;
   };
-  mainEditor: EditorJS;
+  mainEditor: SunEditor;
   editorMenu = [
     {
       label: 'Save',
@@ -54,7 +55,7 @@ export class WritingDesktopComponent {
   selectedReference;
   currentReference;
 
-  noteData: { visible: boolean, editor?: EditorJS, note?: ProjectNote } = { visible: false, editor: undefined, note: undefined };
+  noteData: { visible: boolean, editor?: SunEditor, note?: ProjectNote } = { visible: false, editor: undefined, note: undefined };
 
   openedFilesMaps: {[key: string]: OpenedPage} = {};
   hierarchyMenuService: HierarchyMenuService;
@@ -68,6 +69,12 @@ export class WritingDesktopComponent {
     });
     this.projectService.openReference$.subscribe( e => {
       this.openReference(e);
+    });
+
+    this.projectService.referenceSelected$.subscribe( reference => {
+      const referenceTool = this.projectService.currentReferenceRange.plugins['reference'];
+      referenceTool.apply(this.projectService.currentReferenceRange, reference.path);
+      this.projectService.currentReferenceRange = undefined;
     });
 
     document.addEventListener('keydown', this.saveKeyDown);
@@ -86,7 +93,7 @@ export class WritingDesktopComponent {
   onEditorDataChange(changes: DataChangeEvent){
     this.editorService.onChanges$.next(changes);
     if(this.currentOpenedPage){
-      setTimeout( () =>{ this.currentOpenedPage!.hasChanges = changes.history.currentIndex > -1 }, 50);
+      setTimeout( () =>{ this.currentOpenedPage!.hasChanges = this.mainEditor.core.history.stackIndex != this.currentOpenedPage?.lastSavedIndex }, 50);
     }
   }
 
@@ -96,12 +103,13 @@ export class WritingDesktopComponent {
       this.currentOpenedPage = this.openedFilesMaps[fileInTabs.id];
       return;
     }
-    const file: any = {
+    const file: OpenedPage = {
       id: item.id,
       path: item.path,
       name: item.name,
       data: undefined,
-      hasChanges: false
+      hasChanges: false,
+      lastSavedIndex: 0,
     }
     this.openedFiles.push(file);
     this.projectService.readFile(item.path).subscribe(
@@ -110,13 +118,6 @@ export class WritingDesktopComponent {
         const data =  res ? JSON.parse(res) : null;
         file.data = data;
         this.openedFilesMaps[item.id] = file
-        /* this.openedFilesMaps[item.id] = {
-          id: item.id,
-          path: item.path,
-          name: item.name,
-          data: data,
-          hasChanges: false
-        }; */
         this.openFile({tab: this.openedFilesMaps[item.id]});
       }
     );
@@ -128,9 +129,9 @@ export class WritingDesktopComponent {
 
   onNodeSelected(node){
     console.log(node);
-    const element = document.querySelector(`[data-id="${node}"]`);
+    /* const element = document.querySelector(`[data-id="${node}"]`); */
 
-    element?.scrollIntoView({behavior: 'smooth'});
+    node?.scrollIntoView({behavior: 'smooth'});
   }
 
   closeFile({tab: item}: {tab: OpenedPage}){
@@ -140,8 +141,7 @@ export class WritingDesktopComponent {
     }
     if(this.openedFiles.length === 0){
       this.currentOpenedPage = undefined;
-    }
-    if(this.currentOpenedPage === this.openedFilesMaps[item.id]){
+    } else if(this.currentOpenedPage === this.openedFilesMaps[item.id]){
       // the current page was closed
       if(itemIndex < this.openedFiles.length - 1){
         this.currentOpenedPage = this.openedFilesMaps[this.openedFiles[itemIndex].id];
@@ -164,15 +164,22 @@ export class WritingDesktopComponent {
       if(this.currentOpenedPage.id === item.id){
         return;
       }
-      let editorData = await this.mainEditor.save();
-      this.editorService.addHistory(this.currentOpenedPage.id, this.editorService.history.getCurrentState());
+      let editorData = this.mainEditor.getContents(true);
+      this.editorService.addHistory(this.currentOpenedPage.id, this.getCurrentHistory());
       this.currentOpenedPage.data = editorData;
       this.currentOpenedPage.history = this.editorService.getHistory(item.id);
     }
     this.currentOpenedPage = this.openedFilesMaps[item.id];
   }
 
-  onMainEditorReady(editor: EditorJS){
+  getCurrentHistory(){
+    return {
+      stackIndex: this.mainEditor.core.history.getCurrentIndex(),
+      stack: [...this.mainEditor.core.history.stack]
+    };
+  }
+
+  onMainEditorReady(editor: SunEditor){
     this.mainEditor = editor;
   }
 
@@ -192,22 +199,25 @@ export class WritingDesktopComponent {
     /* this.currentReference = this.hierarchyMenuService.getFileItemFromIndex(reference.path)?.item;
     this.referenceOP.toggle(); */
     /* const context = JSON.parse(target.currentTarget.attributes['ed-data-context'].nodeValue); */
-    const referencePath = event.currentTarget.attributes['ed-data-context'].nodeValue;
+    const referencePath = event.target.attributes['de-reference'].nodeValue;
     // get REFERENCE
     const item = this.hierarchyMenuService.getFileItemFromIndex(referencePath)?.item;
     this.projectService.readFile(item.path).subscribe( res => {
-      this.currentReference = JSON.parse(res);
-      this.currentReference.name = item.name;
+      this.currentReference = {
+        data: res ? JSON.parse(res) : null,
+        name: item.name,
+        id: item.id
+      }
       this.referenceOP.toggle(event);
     });
   }
 
   openCreateNote(){
     this.noteData.visible = true;
-    this.noteData.note = {id: generateUUID(), title: 'New Note Title', position: this.project.notes?.length || 0};
+    this.noteData.note = {id: generateUUID(), title: 'New Note Title', position: this.project.notes?.length || 0, path: ''};
   }
 
-  onNoteEditorReady(editor: EditorJS){
+  onNoteEditorReady(editor: SunEditor){
     this.noteData.editor = editor;
   }
 
@@ -217,6 +227,7 @@ export class WritingDesktopComponent {
         id: note.id,
         title: note.title,
         position: this.project.notes?.length,
+        path: '/' + note.title.toLowerCase().replace(' ', '_')
       },
       note.data
     ).subscribe(
@@ -240,7 +251,7 @@ export class WritingDesktopComponent {
   saveCurrentPage(){
     if(this.currentOpenedPage){
       this.currentOpenedPage.hasChanges = false;
-      this.mainEditor.save().then( (data) => {
+      /* this.mainEditor.save().then( (data) => {
         const payload = {
           id: this.currentOpenedPage!.id,
           ...data,
@@ -248,7 +259,13 @@ export class WritingDesktopComponent {
         this.projectService.saveFile(this.currentOpenedPage!.path, payload).subscribe( res => {
           console.log('File', this.currentOpenedPage!.path, 'saved', res);
         })
-      } );
+      } ); */
+      this.currentOpenedPage.lastSavedIndex = this.mainEditor.core.history.stackIndex;
+      console.log(this.mainEditor.getContents(true));
+      this.projectService.saveFile(this.currentOpenedPage!.path, this.mainEditor.getContents(true)).subscribe( res => {
+        console.log('File', this.currentOpenedPage!.path, 'saved', res);
+      })
+      this.mainEditor.save();
     }
   }
 

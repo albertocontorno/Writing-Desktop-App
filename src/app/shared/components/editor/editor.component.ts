@@ -1,30 +1,28 @@
 import { EditorService } from './../../services/editor.service';
 import { Component, Input, OnInit, Output, EventEmitter, SimpleChanges, ViewChild, ElementRef } from '@angular/core';
-import EditorJS, { OutputData } from '@editorjs/editorjs';
-import Header from '@editorjs/header'; 
-import List from '@editorjs/list'; 
-import { ReferenceTool } from './ReferenceTool/ReferenceTool';
-import { HistoryPlugin } from './plugins/History/HistoryPlugin';
 import { DataChangeEvent } from './models/DataChangeEvent.model';
-import DragDrop from 'editorjs-drag-drop';
 import { ProjectService } from '../../services/project.service';
+import suneditor from 'suneditor'
+import SunEditor from 'suneditor/src/lib/core';
+import plugins from 'suneditor/src/plugins'
+import * as eng from 'suneditor/src/lang/en';
+import { getReferenceTool } from './plugins/History/ReferenceTool';
 @Component({
   selector: 'app-editor',
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss']
 })
 export class EditorComponent implements OnInit {
-  @Input() id = 'editorjs';
-  @Input() data: OutputData;
+  @Input() id = 'main-editor';
+  @Input() data: any;
   @Input() pageId: string;
-  @Input() maxHeightStyle: string = 'calc(100vh - 103px)';
+  @Input() maxHeightStyle: string = 'calc(100vh - 200px)';
 
-  @Output() editorReady: EventEmitter<EditorJS> = new EventEmitter();
+  @Output() editorReady: EventEmitter<SunEditor> = new EventEmitter();
   @Output() dataChanged: EventEmitter<DataChangeEvent> = new EventEmitter();
 
-  editor: EditorJS;
+  editor: SunEditor;
 
-  history: HistoryPlugin;
   @ViewChild('holder', {static: true}) holder: ElementRef;
   constructor(private editorService: EditorService, private projectService: ProjectService) { }
 
@@ -36,71 +34,100 @@ export class EditorComponent implements OnInit {
     if(changes.data && !changes.data.firstChange){
       console.log('data changed', changes.data)
       if(!changes.data.currentValue){
-        this.editor.clear();
-        this.history.init();
+        this.editor.setContents(changes.data.currentValue);
       } else {
-        this.editor.render(changes.data.currentValue).then( _ => {
-          this.holder.nativeElement.querySelectorAll('.ed-reference').forEach( ref => {
-            ref.addEventListener('click', (e) => this.projectService.openReference$.next(e));
-          });
-        });
-        const historyInfo = this.editorService.getHistory(changes.pageId?.currentValue);
-        this.history.init(changes.data.currentValue, historyInfo?.currentIndex, historyInfo?.history);
+        this.editor.setContents(changes.data.currentValue);
+        /* this.editor.getContext().element.editorArea.querySelectorAll('[de-reference]').forEach( ref => {
+          ref.addEventListener('click', (e) => this.projectService.openReference$.next(e));
+        }); */
       }
+      const prevHistory = this.editorService.getHistory(changes.pageId.currentValue);
+      if(prevHistory){
+        this.editor.core.history.setStack(prevHistory.stack);
+        this.editor.core.history.setCurrentIndex(prevHistory.stackIndex);
+      } else {
+        this.editor?.core.history.reset(true);
+      }
+      this.editor?.core.history._resetCachingButton();
     }
+    
   }
 
   ngAfterViewInit(){
-    this.editor = new EditorJS({
-      data: this.data,
-      holder: this.id,
-      tools: { 
-        header: {
-          class: Header,
-          inlineToolbar: ['italic'/* , 'reference' */]
-        },
-        list: {
-          class: List,
-          inlineToolbar: ['bold', 'italic'/* , 'reference' */],
-        },
-        reference: {
-          class: ReferenceTool,
-          config: {
-            getService: () => this.projectService
-          }
-        }
-      },
-      inlineToolbar: true,
-      onChange: (api, changes) => {
-        this.history.onChanges(api, changes);
-        this.dataChanged.emit({
-          api,
-          changes: !Array.isArray(changes) ? [changes] : changes,
-          history: this.history
-        });
-      },
-      onReady: () => {
-        this.history = new HistoryPlugin(this.editor, this.holder.nativeElement, this.data);
-        this.editorService.setHistoryPlugin(this.history);
-        new DragDrop(this.editor);
-        this.holder.nativeElement.querySelectorAll('.ed-reference').forEach( ref => {
-          ref.addEventListener('click', (e) => this.projectService.openReference$.next(e));
-        });
-                
-        this.editorReady.emit(this.editor);
+    const _plugins = {
+      ...plugins, 
+      reference: getReferenceTool(this.projectService)
+    };
+    console.log(_plugins)
+    this.editor = suneditor.create(this.id, {
+      // All of the plugins are loaded in the "window.SUNEDITOR" object in dist/suneditor.min.js file
+      // Insert options
+      // Language global object (default: en)
+      defaultStyle: 'font-size: 14px; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; line-height: 1.42857143; color: #222; background-color: #ccc;',
+      value: this.data,
+      lang: eng as any,
+      height: 'auto',
+      plugins: _plugins,
+      resizeEnable: true,
+      /* resizingBarContainer: 'editor-tools-' + this.id, */
+      stickyToolbar: '0px',
+      attributesWhitelist: {'span':'de-reference'},
+      toolbarContainer: 'editor-tools-' + this.id,
+      buttonList: [
+          [
+            'undo', 'redo',
+            'font', 'fontSize', 'formatBlock',
+            'paragraphStyle', 'blockquote',
+            'bold', 'underline', 'italic', 'strike', 'subscript', 'superscript',
+            'fontColor', 'hiliteColor', 'textStyle',
+            'removeFormat',
+            'outdent', 'indent',
+            'align', 'horizontalRule', 'list', 'lineHeight',
+            'table', 'link', 'image', 'video', 'audio', /** 'math', */ // You must add the 'katex' library at options to use the 'math' plugin.
+            /** 'imageGallery', */ // You must add the "imageGalleryUrl".
+            'fullScreen', 'showBlocks', 'codeView',
+            'preview', 'print', 'save', /* 'template', */
+            /** 'dir', 'dir_ltr', 'dir_rtl' */ // "dir": Toggle text direction, "dir_ltr": Right to Left, "dir_rtl": Left to Right
+            'reference', 'customSave'
+          ]
+      ],
+      /* width: '1000px',
+      maxWidth: '1200px',
+      minWidth: '600px', */
+      width: 'auto',
+      maxHeight: this.maxHeightStyle,
+      minHeight: this.maxHeightStyle
+    });
+    this.editor.onChange = (contents, core) => { 
+      console.log('onChange', contents) 
+      /* core.history. */
+      this.dataChanged.emit(contents);
+    };
+    this.editor.onSave = (contents, core) => { 
+      console.log('onChange', contents);
+      (this.editor.core as any)._variable.isChanged = false;
+    };
+    /* this.editor.getContext().element.editorArea.querySelectorAll('[de-reference]').forEach( ref => {
+      ref.addEventListener('click', (e) => this.projectService.openReference$.next(e));
+    }); */
+    this.editor.getContext().element.editorArea.addEventListener('click', (e) => {
+      const t: HTMLElement = e.target as HTMLElement;
+      const event: PointerEvent = e as PointerEvent;
+      if(event.altKey &&t.attributes['de-reference']){
+        this.projectService.openReference$.next(event);
       }
     });
+    this.editorReady.emit(this.editor);
+    
   }
 
   save(){
-    this.editor.save().then((outputData) => {
-      console.error('Data: ', outputData);
-    }).catch((error) => {
-      console.error('Saving failed: ', error);
-    });
+    console.log('SAVE', this.editor.getContents(false) );
   }
 
   ngOnDestroy(){
-    this.history.destroy();
+    this.editor.destroy();
   }
+
+  
 }

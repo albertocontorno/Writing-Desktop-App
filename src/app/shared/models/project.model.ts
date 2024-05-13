@@ -1,4 +1,3 @@
-import { OutputData } from "@editorjs/editorjs";
 
 /* export interface Project {
   id: string;
@@ -29,7 +28,7 @@ export interface ProjectFile{
   isEditing?: boolean;// internal
   position: number;
   
-  data: OutputData;
+  data: any;
 }
 export interface TextEditorPage {
   id: string;
@@ -41,6 +40,7 @@ export interface ProjectNote {
   id: string;
   title: string;
   position: number;
+  path: string;
   data?: any; // internal
 }
 export interface TextEditorIndex {

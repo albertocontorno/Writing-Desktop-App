@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import EditorJS, { OutputData } from '@editorjs/editorjs';
 import { ProjectNote } from '../../../models/project.model';
+import SunEditor from 'suneditor/src/lib/core';
 @Component({
   selector: 'app-form-note',
   templateUrl: './form-note.component.html',
@@ -28,8 +28,9 @@ export class FormNoteComponent {
   @Output() confirmNote: EventEmitter<ProjectNote> = new EventEmitter();
   @Output() close: EventEmitter<void> = new EventEmitter();
 
-  editor: EditorJS;
-  form: FormGroup;  
+  editor: SunEditor;
+  form: FormGroup;
+  ready: boolean = false;
   constructor(private fb: FormBuilder){
     this.form = fb.group({
       id: [null, Validators.required],
@@ -59,15 +60,23 @@ export class FormNoteComponent {
     this.form.reset();
     this._note = undefined;
     this.visible = false;
+    this.ready = false;
     this.close.emit();
   }
 
   onConfirm(){
     const note = {...this.form.value};
-    this.editor.save().then( data => {
+    /* this.editor.save().then( data => {
       note.data = data;
       this.confirmNote.emit(note);
       this.closeCreateNote();
-    });
+    }); */
+    note.data = this.editor.getContents(true);
+    this.confirmNote.emit(note);
+    this.closeCreateNote();
+  }
+
+  onShow(){
+    this.ready = true;
   }
 }

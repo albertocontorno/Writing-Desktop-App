@@ -1,11 +1,10 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { ConfirmationService, TreeNode } from 'primeng/api';
 import { ProjectService } from '../../services/project.service';
 import { BLOCK_TYPES } from '../../constants/BLOCK_TYPES.constants';
 import { EditorService } from '../../services/editor.service';
-import { OutputData, SavedData } from '@editorjs/editorjs/types/data-formats';
 import { DataChangeEvent } from '../editor/models/DataChangeEvent.model';
-import { API, BlockAddedEvent, BlockChangedEvent, BlockMovedEvent, BlockRemovedEvent } from '@editorjs/editorjs';
+import SunEditor from 'suneditor/src/lib/core';
 
 @Component({
   selector: 'app-text-editor-index',
@@ -14,18 +13,19 @@ import { API, BlockAddedEvent, BlockChangedEvent, BlockMovedEvent, BlockRemovedE
   providers: []
 })
 export class TextEditorIndexComponent {
-  _blocks: OutputData;
-  @Input() set blocks(v: OutputData){
+  _blocks: any;
+  @Input() set blocks(v: SunEditor){
     this._blocks = v;
     this.index = [];
-    this._blocks?.blocks.forEach( (b, i) => {
-      if(b.type === 'header'){
+    if(v){
+      v.getContext().element.editorArea.querySelectorAll('h1').forEach( h1 => {
         this.index.push({
-          label: b.data.text?.replace(/<([^<]*)>|<(\/[^<]*)>/g, ''),
-          data: { id: b.id! }
+          label: h1.textContent?.replace(/<([^<]*)>|<(\/[^<]*)>/g, ''),
+          data: h1
         });
-      }
-    })
+      });
+      this.cdRef.markForCheck();
+    }
   }
 
   @Output() nodeSelected: EventEmitter<string> = new EventEmitter();
@@ -33,7 +33,7 @@ export class TextEditorIndexComponent {
   index: TreeNode<{ id: string }>[]= [];
   selected: TreeNode<any> | TreeNode<any>[] | null;
 
-  constructor(private projectService: ProjectService, private editorService: EditorService) {
+  constructor(private projectService: ProjectService, private editorService: EditorService, private cdRef: ChangeDetectorRef) {
     this.projectService.onChange$.subscribe( _ => {
       this.index = [];
     });
@@ -42,72 +42,19 @@ export class TextEditorIndexComponent {
 
   }
 
-  async computeChanges({api, changes}: DataChangeEvent){
-    changes.forEach( async (change) => {
-      switch(change.type){
-        case 'block-added': {
-          change = change as BlockAddedEvent;
-          if(change.detail.target.name === 'header'){
-            const newBlockId = change.detail.target.id;
-            const state = ((await api.blocks.getById(newBlockId)!.save()) as SavedData).data;
-            const newBlockIndex = change.detail.index;
-            for (let i = 0; i < this.index.length; i++) {
-              const element = this.index[i];
-              const elementIndex = api.blocks.getBlockIndex(element.data!.id);
-              if(elementIndex >= newBlockIndex){
-                this.index.splice(i, 0, this.createEntry(state.text, newBlockId));
-                break;
-              }
-              if(i === this.index.length - 1){
-                this.index.push(this.createEntry(state.text, newBlockId));
-                break;
-              }
-            }
-          }
-          break;
-        }
-        case 'block-removed': {
-          change = change as BlockRemovedEvent;
-          if(change.detail.target.name === 'header'){
-            const blockId = change.detail.target.id;
-            const index = this.index.findIndex( block => block.data!.id === blockId );
-            if(index > -1){
-              this.index.splice(index, 1);
-            }
-          }
-          break;
-        }
-        case 'block-changed': {
-          change = change as BlockChangedEvent;
-          if(change.detail.target.name === 'header'){
-            const blockId = change.detail.target.id;
-            const index = this.index.findIndex( block => block.data!.id === blockId );
-            const state = ((await api.blocks.getById(blockId)!.save()) as SavedData).data;
-            if(index > -1){
-              this.index[index].label = this.extratText(state.text);
-            }
-          }
-          break;
-        }
-        case 'block-moved': {
-          change = change as BlockMovedEvent;
-          const fromBlock = api.blocks.getBlockByIndex(change.detail.fromIndex);
-          let headerBlock = fromBlock && fromBlock.name === 'header' ? fromBlock : null; 
-          if(headerBlock){
-            this.moveIndexEntry(headerBlock.id, api);
-          }
-          const toBlock = api.blocks.getBlockByIndex(change.detail.toIndex);
-          headerBlock = toBlock && toBlock.name === 'header'  ? toBlock : null; 
-          if(headerBlock){
-            this.moveIndexEntry(headerBlock.id, api);
-          }
-          break;
-        }
-      }
-    })
+  async computeChanges({api, changes}: any){
+    if(this._blocks?.getContext){
+      this.index = [];
+      this._blocks.getContext().element.editorArea.querySelectorAll('h1').forEach( h1 => {
+        this.index.push({
+          label: h1.textContent?.replace(/<([^<]*)>|<(\/[^<]*)>/g, ''),
+          data: h1
+        });
+      });
+    }
   }
 
-  private moveIndexEntry(blockId: string, api: API){
+  private moveIndexEntry(blockId: string, api: any){
     const blockIndex = api.blocks.getBlockIndex(blockId);
     const blockInIndexPos = this.index.findIndex( e => e.data!.id === blockId )!;
     const blockToMove = this.index[blockInIndexPos];
@@ -139,7 +86,7 @@ export class TextEditorIndexComponent {
   }
 
   onSelection(e){
-    this.nodeSelected.emit(e.node.data.id);
+    this.nodeSelected.emit(e.node.data);
   }
 
 }

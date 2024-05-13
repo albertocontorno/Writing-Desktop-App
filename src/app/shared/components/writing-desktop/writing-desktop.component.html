@@ -2,6 +2,7 @@
   <ng-template pTemplate>
     <p-splitter [style]="{'height': 'calc(100vh - 35px)'}" [panelSizes]="[50,50]" [minSizes]="[20,20]">
 
+      <!-- FILES -->
       <ng-template pTemplate>
         <app-hierarchy-menu 
           style="width: 100%;"
@@ -13,11 +14,12 @@
         ></app-hierarchy-menu>
       </ng-template>
 
+      <!-- INDEX -->
       <ng-template pTemplate>
         <app-text-editor-index
           *ngIf="currentOpenedPage"
           style="width: 100%;"
-          [blocks]="currentOpenedPage.data"
+          [blocks]="mainEditor"
           (nodeSelected)="onNodeSelected($event)"
       ></app-text-editor-index>
       </ng-template>
@@ -25,6 +27,7 @@
 
   </ng-template>
 
+  <!-- MAIN EDITOR -->
   <ng-template pTemplate>
     <p-splitter [style]="{'height': 'calc(100vh - 35px)'}" [panelSizes]="[80,20]" [minSizes]="[60,20]">
       <ng-template pTemplate>
@@ -40,6 +43,7 @@
           ></app-editor>
         </div>
       </ng-template>
+      <!-- NOTES -->
       <ng-template pTemplate>
         <div style="width: 100%">
           <app-notes-container [notesIndex]="project.notes"></app-notes-container>
@@ -72,7 +76,7 @@
       <h4 class="text-center">{{currentReference.name}}</h4>
       <app-editor
         *ngIf="currentReference"
-        [data]="currentReference"
+        [data]="currentReference.data"
         [pageId]="currentReference.id + '_reference'"
         [id]="currentReference.id"
         [maxHeightStyle]="'500px'"

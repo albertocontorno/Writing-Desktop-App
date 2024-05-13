@@ -151,7 +151,13 @@ body {
 
 .referenceOverlay{
   min-width: 850px;
+  max-width: 60vw;
 }
+
+/* min-width: 50vh;
+  max-width: 70vh;
+  min-height: 50vh;
+  max-height: 70vh; */
 
 /* .ce-block__content{
   max-width: 750px;
@@ -167,4 +173,64 @@ body {
 
 .codex-editor ::selection {
   background-color: #415668;
+}
+
+
+// SUN EDITOR
+.sun-editor button {
+  color: #ddd !important;
+}
+
+.sun-editor-editable{
+  background-color: #1e1e1e !important;
+  color: #ddd !important;
+}
+
+.sun-editor .se-btn-list:disabled, .sun-editor .se-btn:disabled, .sun-editor button:disabled {
+  color: #5c5c5c !important;
+}
+
+.sun-editor .se-btn-list:disabled, .sun-editor .se-btn:disabled, .sun-editor button:disabled {
+  background-color: #141414 !important;
+}
+
+.sun-editor .se-btn:enabled:focus, .sun-editor .se-btn:enabled:hover {
+  background-color: #3e3e3e !important;
+  outline: 0 none;
+}
+
+.sun-editor .se-btn:enabled.active {
+  color: #d1d1d1;
+  background-color: #2a2a2a !important;
+  border: 1px solid #ccc;
+}
+
+.sun-editor .se-toolbar{
+  background-color: #141414 !important;
+  outline: none !important;
+  border-bottom: 1px solid #ccc;
+}
+
+.sun-editor {
+  border: none !important;
+  margin: 0 auto;
+  display: flex;
+}
+
+.sun-editor .se-resizing-bar{
+  background-color: #141414 !important;
+  color: #ddd !important;
+  border-top: 1px solid #ccc;
+}
+
+
+.sun-editor::-webkit-scrollbar {
+  width: 10px; /* Mostly for vertical scrollbars */
+  height: 10px; /* Mostly for horizontal scrollbars */
+}
+.sun-editor::-webkit-scrollbar-thumb { /* Foreground */
+  background: #0b213f;
+}
+.sun-editor::-webkit-scrollbar-track { /* Background */
+  background: transparent;
 }

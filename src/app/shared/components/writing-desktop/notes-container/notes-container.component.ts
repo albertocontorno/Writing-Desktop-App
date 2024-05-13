@@ -1,10 +1,8 @@
-import { OutputData } from '@editorjs/editorjs';
 import { Observable, forkJoin, tap } from 'rxjs';
 import { ProjectNote } from '../../../models/project.model';
 import { ProjectService } from '../../../services/project.service';
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MenuItem, PrimeIcons } from 'primeng/api';
-import edjsHTML from 'editorjs-html';
 import { Menu } from 'primeng/menu';
 @Component({
   selector: 'app-notes-container',
@@ -54,7 +52,7 @@ export class NotesContainerComponent implements OnInit {
   editingNote?: ProjectNote;
   toHtml;
   constructor(private projectService: ProjectService, private cd: ChangeDetectorRef){
-    this.toHtml = edjsHTML().parse;
+    //this.toHtml = edjsHTML().parse;
     this.projectService.onChange$.subscribe( changes => {
       this.notesIndex = changes.project.notes;
     });
@@ -76,12 +74,12 @@ export class NotesContainerComponent implements OnInit {
       if(!this.notes.find(n => n.id === note.id)){
         const newNote = {...note};
         this.notes.push(newNote);
-        obs$.push(this.projectService.readNote(note.title).pipe(
+        obs$.push(this.projectService.readNote(note.path).pipe(
           tap( data => {
-            const noteParsed = JSON.parse(data) as OutputData & {id: string};
+            const noteParsed = JSON.parse(data) as any & {id: string};
             const found = this.notesIndex.find( n => n.id === noteParsed.id );
             if(found){
-              newNote.data = noteParsed;
+              newNote.data = noteParsed.data;
             }
           })
         ));
@@ -106,7 +104,7 @@ export class NotesContainerComponent implements OnInit {
     this.editingNote!.title = note.title;
     this.editingNote!.data = note.data;
     this.notesIndex[this.index].title = note.title;
-    this.projectService.updateNote(oldTitle, note.title, {id: note.id, ...note.data}).subscribe(
+    this.projectService.updateNote(oldTitle, note.title, {id: note.id, data: note.data}).subscribe(
       res => {
         console.log('note updated', res)
         this.reset();
