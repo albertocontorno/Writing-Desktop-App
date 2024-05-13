@@ -88,7 +88,7 @@ export class EditorComponent implements OnInit {
             'fullScreen', 'showBlocks', 'codeView',
             'preview', 'print', 'save', /* 'template', */
             /** 'dir', 'dir_ltr', 'dir_rtl' */ // "dir": Toggle text direction, "dir_ltr": Right to Left, "dir_rtl": Left to Right
-            'reference', 'customSave'
+            'reference'
           ]
       ],
       /* width: '1000px',
