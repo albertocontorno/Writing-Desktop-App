@@ -13,19 +13,10 @@ import SunEditor from 'suneditor/src/lib/core';
   providers: []
 })
 export class TextEditorIndexComponent {
-  _blocks: any;
+  _editor: any;
   @Input() set blocks(v: SunEditor){
-    this._blocks = v;
-    this.index = [];
-    if(v){
-      v.getContext().element.editorArea.querySelectorAll('h1').forEach( h1 => {
-        this.index.push({
-          label: h1.textContent?.replace(/<([^<]*)>|<(\/[^<]*)>/g, ''),
-          data: h1
-        });
-      });
-      this.cdRef.markForCheck();
-    }
+    this._editor = v;
+    this.computeChanges();
   }
 
   @Output() nodeSelected: EventEmitter<string> = new EventEmitter();
@@ -42,16 +33,51 @@ export class TextEditorIndexComponent {
 
   }
 
-  async computeChanges({api, changes}: any){
-    if(this._blocks?.getContext){
-      this.index = [];
-      this._blocks.getContext().element.editorArea.querySelectorAll('h1').forEach( h1 => {
+  private computeChanges(){
+    this.index = [];
+    let current: TreeNode<{ id: string }>;
+    this._editor?.getContext?.().element.editorArea.querySelectorAll('h1, h2').forEach( h1 => {
+      if(h1.tagName === 'H1'){
+        current = {
+          label: h1.textContent?.replace(/<([^<]*)>|<(\/[^<]*)>/g, ''),
+          data: h1,
+          children: [],
+          expanded: true,
+          expandedIcon: ''
+          /* class: h1.tagName.toLowerCase()  */
+        };
+        this.index.push(current);
+      } else if(h1.tagName === 'H2'){
+        let h2 = {
+          label: h1.textContent?.replace(/<([^<]*)>|<(\/[^<]*)>/g, ''),
+          data: h1,
+          children: []
+          /* class: h1.tagName.toLowerCase()  */
+        };
+        if(current){
+          current.children!.push({
+            label: h1.textContent?.replace(/<([^<]*)>|<(\/[^<]*)>/g, ''),
+            data: h1,
+            children: []
+            /* class: h1.tagName.toLowerCase()  */
+          });
+        } else {
+          this.index.push(h2);
+        }
+      } else {
         this.index.push({
           label: h1.textContent?.replace(/<([^<]*)>|<(\/[^<]*)>/g, ''),
-          data: h1
+          data: h1,
+          children: []
+          /* class: h1.tagName.toLowerCase()  */
         });
-      });
-    }
+      }
+    });
+    this.cdRef.markForCheck();
+  }
+
+  private createIndex(){
+
   }
 
   private moveIndexEntry(blockId: string, api: any){

@@ -7,6 +7,7 @@ import { HistoryChacheEntry } from '../../models/internals/HistoryCache.model';
 import { generateUUID } from '../../utils/utils';
 import { HierarchyMenuService } from '../hierarchy-menu/hierarchy-menu.service';
 import SunEditor from 'suneditor/src/lib/core';
+import { MenuItem, PrimeIcons } from 'primeng/api';
 
 interface OpenedPage {
   id: string,
@@ -41,22 +42,11 @@ export class WritingDesktopComponent {
     return this._currentOpenedPage;
   };
   mainEditor: SunEditor;
-  editorMenu = [
-    {
-      label: 'Save',
-      command: () => this.saveCurrentPage()
-    },
-    {
-      label: 'Add Note',
-      command: () => this.openCreateNote()
-    }
-  ]
+  editorMenu: MenuItem[] = [];
   isReferenceChooseVisible;
   selectedReference;
   currentReference;
-
   noteData: { visible: boolean, editor?: SunEditor, note?: ProjectNote } = { visible: false, editor: undefined, note: undefined };
-
   openedFilesMaps: {[key: string]: OpenedPage} = {};
   hierarchyMenuService: HierarchyMenuService;
   @ViewChild('referenceOP') referenceOP;
@@ -78,6 +68,8 @@ export class WritingDesktopComponent {
     });
 
     document.addEventListener('keydown', this.saveKeyDown);
+
+    this.generateEditorMenu();
   }
 
   saveKeyDown = (e) => {
@@ -93,7 +85,8 @@ export class WritingDesktopComponent {
   onEditorDataChange(changes: DataChangeEvent){
     this.editorService.onChanges$.next(changes);
     if(this.currentOpenedPage){
-      setTimeout( () =>{ this.currentOpenedPage!.hasChanges = this.mainEditor.core.history.stackIndex != this.currentOpenedPage?.lastSavedIndex }, 50);
+      this.currentOpenedPage!.hasChanges = this.mainEditor.core.history.stackIndex != this.currentOpenedPage?.lastSavedIndex;
+      this.generateEditorMenu();
     }
   }
 
@@ -128,9 +121,6 @@ export class WritingDesktopComponent {
   }
 
   onNodeSelected(node){
-    console.log(node);
-    /* const element = document.querySelector(`[data-id="${node}"]`); */
-
     node?.scrollIntoView({behavior: 'smooth'});
   }
 
@@ -196,11 +186,7 @@ export class WritingDesktopComponent {
 
   openReference(event){
     // get REFERENCE
-    /* this.currentReference = this.hierarchyMenuService.getFileItemFromIndex(reference.path)?.item;
-    this.referenceOP.toggle(); */
-    /* const context = JSON.parse(target.currentTarget.attributes['ed-data-context'].nodeValue); */
     const referencePath = event.target.attributes['de-reference'].nodeValue;
-    // get REFERENCE
     const item = this.hierarchyMenuService.getFileItemFromIndex(referencePath)?.item;
     this.projectService.readFile(item.path).subscribe( res => {
       this.currentReference = {
@@ -251,15 +237,6 @@ export class WritingDesktopComponent {
   saveCurrentPage(){
     if(this.currentOpenedPage){
       this.currentOpenedPage.hasChanges = false;
-      /* this.mainEditor.save().then( (data) => {
-        const payload = {
-          id: this.currentOpenedPage!.id,
-          ...data,
-        };
-        this.projectService.saveFile(this.currentOpenedPage!.path, payload).subscribe( res => {
-          console.log('File', this.currentOpenedPage!.path, 'saved', res);
-        })
-      } ); */
       this.currentOpenedPage.lastSavedIndex = this.mainEditor.core.history.stackIndex;
       console.log(this.mainEditor.getContents(true));
       this.projectService.saveFile(this.currentOpenedPage!.path, this.mainEditor.getContents(true)).subscribe( res => {
@@ -267,6 +244,51 @@ export class WritingDesktopComponent {
       })
       this.mainEditor.save();
     }
+  }
+
+  saveAll(){
+    Object.keys(this.openedFilesMaps).forEach( key => {
+      const page = this.openedFilesMaps[key];
+      if(page.hasChanges){
+        this.projectService.saveFile(page!.path, page === this.currentOpenedPage? this.mainEditor.getContents(true) : page.data).subscribe( res => {
+          console.log('File', page!.path, 'saved', res);
+          page.hasChanges = false;
+          page.lastSavedIndex = this.editorService.getHistory(page.id).stackIndex;
+        })
+      }
+    })
+  }
+
+  private generateEditorMenu(){
+    this.editorMenu = [
+      {
+        label: 'Save',
+        command: () => this.saveCurrentPage(),
+        icon: PrimeIcons.SAVE,
+        title: 'Save',
+        id: 'SAVE',
+        disabled: !this.currentOpenedPage?.hasChanges,
+      },
+      {
+        label: 'Save All',
+        command: () => this.saveAll(),
+        icon: PrimeIcons.SAVE,
+        title: 'Save All',
+        id: 'SAVE_ALL',
+        disabled: !this.atLeastOnePageHasChanges(),
+      },
+      {
+        label: 'Add Note',
+        command: () => this.openCreateNote(),
+        icon: PrimeIcons.PLUS,
+        title: 'Add Note',
+        id: 'ADD_NOTE'
+      }
+    ]
+  }
+
+  private atLeastOnePageHasChanges(){
+    return Object.values(this.openedFilesMaps).some( page => page.hasChanges);
   }
 
   ngOnDestroy(){

@@ -234,3 +234,8 @@ body {
 .sun-editor::-webkit-scrollbar-track { /* Background */
   background: transparent;
 }
+
+.sun-editor-editable{
+  word-wrap: break-word !important;
+  word-break: break-all !important;
+}

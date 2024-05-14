@@ -83,10 +83,10 @@ export class EditorComponent implements OnInit {
             'removeFormat',
             'outdent', 'indent',
             'align', 'horizontalRule', 'list', 'lineHeight',
-            'table', 'link', 'image', 'video', 'audio', /** 'math', */ // You must add the 'katex' library at options to use the 'math' plugin.
+            'table', 'link', 'image', /* 'video', 'audio', */ /** 'math', */ // You must add the 'katex' library at options to use the 'math' plugin.
             /** 'imageGallery', */ // You must add the "imageGalleryUrl".
             'fullScreen', 'showBlocks', 'codeView',
-            'preview', 'print', 'save', /* 'template', */
+            'preview', 'print', /* 'save' ,*/ /* 'template', */
             /** 'dir', 'dir_ltr', 'dir_rtl' */ // "dir": Toggle text direction, "dir_ltr": Right to Left, "dir_rtl": Left to Right
             'reference'
           ]
@@ -94,9 +94,13 @@ export class EditorComponent implements OnInit {
       /* width: '1000px',
       maxWidth: '1200px',
       minWidth: '600px', */
+      /* maxWidth: '60%', */
       width: 'auto',
-      maxHeight: this.maxHeightStyle,
-      minHeight: this.maxHeightStyle
+      maxWidth: 'auto',
+      maxHeight: 'calc(100vh - 200px)',
+      minHeight: 'calc(100vh - 200px)',
+      /* maxHeight: this.maxHeightStyle,
+      minHeight: this.maxHeightStyle */
     });
     this.editor.onChange = (contents, core) => { 
       console.log('onChange', contents) 

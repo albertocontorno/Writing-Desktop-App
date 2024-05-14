@@ -74,13 +74,14 @@
   <ng-template pTemplate>
     <ng-container *ngIf="currentReference">
       <h4 class="text-center">{{currentReference.name}}</h4>
-      <app-editor
+      <!-- <app-editor
         *ngIf="currentReference"
         [data]="currentReference.data"
         [pageId]="currentReference.id + '_reference'"
         [id]="currentReference.id"
         [maxHeightStyle]="'500px'"
-      ></app-editor>
+      ></app-editor> -->
+      <div [innerHTML]="currentReference.data | safeHtml" style="word-wrap: break-word;"></div>
     </ng-container>
     <div *ngIf="!currentReference">The reference doesn't exist!</div>
   </ng-template>
