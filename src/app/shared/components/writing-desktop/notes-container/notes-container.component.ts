@@ -52,8 +52,8 @@ export class NotesContainerComponent implements OnInit {
   editingNote?: ProjectNote;
   toHtml;
   constructor(private projectService: ProjectService, private cd: ChangeDetectorRef){
-    //this.toHtml = edjsHTML().parse;
     this.projectService.onChange$.subscribe( changes => {
+      this.notes = [];
       this.notesIndex = changes.project.notes;
     });
   }

@@ -36,6 +36,8 @@ export class WritingDesktopComponent {
     this._currentOpenedPage = value;
     if(value){
       this.currentOpenedPageIndex = this.openedFiles.findIndex( f => f.id === value.id );
+    } else {
+      this.currentOpenedPageIndex = -1;
     }
   }
   get currentOpenedPage(): OpenedPage | undefined{
@@ -52,6 +54,13 @@ export class WritingDesktopComponent {
   @ViewChild('referenceOP') referenceOP;
   constructor(private projectService: ProjectService, private editorService: EditorService){
     this.projectService.onChange$.subscribe( changes => {
+      this.currentOpenedPage = undefined;
+      this.openedFiles = [];
+      this.openedFilesMaps = {};
+      this.currentOpenedPageIndex = -1;
+      this.isReferenceChooseVisible = false;
+      this.currentReference = null;
+      this.noteData = { visible: false, editor: undefined, note: undefined };
       this.project = changes.project!;
     });
     this.projectService.chooseReference$.subscribe( isOpen => {

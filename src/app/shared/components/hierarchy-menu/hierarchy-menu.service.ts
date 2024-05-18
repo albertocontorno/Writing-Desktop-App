@@ -27,6 +27,7 @@ export class HierarchyMenuService {
   private _files: ProjectFile[] = [];
   set files ( v: ProjectFile[]){
     this._files = v;
+    this.filesIndex = {};
     this.createFileIndex(this._files, this.filesIndex);
     
     console.log(this.filesIndex)

@@ -224,15 +224,15 @@ body {
 }
 
 
-.sun-editor::-webkit-scrollbar {
+.sun-editor-editable::-webkit-scrollbar {
   width: 10px; /* Mostly for vertical scrollbars */
   height: 10px; /* Mostly for horizontal scrollbars */
 }
-.sun-editor::-webkit-scrollbar-thumb { /* Foreground */
-  background: #0b213f;
+.sun-editor-editable::-webkit-scrollbar-thumb { /* Foreground */
+  background: #070707;
 }
-.sun-editor::-webkit-scrollbar-track { /* Background */
-  background: transparent;
+.sun-editor-editable::-webkit-scrollbar-track { /* Background */
+  background: rgb(34, 34, 34);
 }
 
 .sun-editor-editable{
