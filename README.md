@@ -4,6 +4,6 @@
 An app to help you write something made with:
 - Angular v16.1.3
 - Electron v25.2.0
-- EditorJS v2.28.2
+- SunEditor v2.46.2
 
 The template for Electron+Angular -> https://github.com/maximegris/angular-electron.git
