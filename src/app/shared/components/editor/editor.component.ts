@@ -32,14 +32,10 @@ export class EditorComponent implements OnInit {
 
   ngOnChanges(changes: SimpleChanges){
     if(changes.data && !changes.data.firstChange){
-      console.log('data changed', changes.data)
       if(!changes.data.currentValue){
         this.editor.setContents(changes.data.currentValue);
       } else {
         this.editor.setContents(changes.data.currentValue);
-        /* this.editor.getContext().element.editorArea.querySelectorAll('[de-reference]').forEach( ref => {
-          ref.addEventListener('click', (e) => this.projectService.openReference$.next(e));
-        }); */
       }
       const prevHistory = this.editorService.getHistory(changes.pageId.currentValue);
       if(prevHistory){
@@ -58,7 +54,6 @@ export class EditorComponent implements OnInit {
       ...plugins, 
       reference: getReferenceTool(this.projectService)
     };
-    console.log(_plugins)
     this.editor = suneditor.create(this.id, {
       // All of the plugins are loaded in the "window.SUNEDITOR" object in dist/suneditor.min.js file
       // Insert options
@@ -103,12 +98,11 @@ export class EditorComponent implements OnInit {
       minHeight: this.maxHeightStyle */
     });
     this.editor.onChange = (contents, core) => { 
-      console.log('onChange', contents) 
-      /* core.history. */
+      console.log('onChange', contents);
       this.dataChanged.emit(contents);
     };
     this.editor.onSave = (contents, core) => { 
-      console.log('onChange', contents);
+      console.log('onSave', contents);
       (this.editor.core as any)._variable.isChanged = false;
     };
     /* this.editor.getContext().element.editorArea.querySelectorAll('[de-reference]').forEach( ref => {
@@ -126,7 +120,7 @@ export class EditorComponent implements OnInit {
   }
 
   save(){
-    console.log('SAVE', this.editor.getContents(false) );
+    
   }
 
   ngOnDestroy(){

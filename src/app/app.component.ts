@@ -14,7 +14,6 @@ import { AlertServiceService } from './shared/services/alert-service.service';
 export class AppComponent implements OnInit{
   items: MenuItem[];
   createProjectDialogVisible = false;
-  project; // TODO remove
   constructor(
     private electronService: ElectronService,
     private projectService: ProjectService,
@@ -26,9 +25,6 @@ export class AppComponent implements OnInit{
 
     if (electronService.isElectron) {
       console.log(process.env);
-      console.log('Run in electron');
-      console.log('Electron ipcRenderer', this.electronService.ipcRenderer);
-      console.log('NodeJS childProcess', this.electronService.childProcess);
     } else {
       console.log('Run in browser');
     }
@@ -76,7 +72,6 @@ export class AppComponent implements OnInit{
       console.log(value);
       this.createProjectDialogVisible = false;
       this.messageService.success('PROJECT.CREATION.SUCCESS', 'COMMON.SUCCESS', { name: info.name });
-      this.project = value; // TODO replace with one from service
       this.projectService.set(value.project, value.settings);
     });
   }

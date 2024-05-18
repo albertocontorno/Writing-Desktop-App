@@ -116,7 +116,6 @@ export class WritingDesktopComponent {
     this.openedFiles.push(file);
     this.projectService.readFile(item.path).subscribe(
       res => {
-        console.log(res);
         const data =  res ? JSON.parse(res) : null;
         file.data = data;
         this.openedFilesMaps[item.id] = file
@@ -248,7 +247,6 @@ export class WritingDesktopComponent {
     if(this.currentOpenedPage){
       this.currentOpenedPage.hasChanges = false;
       this.currentOpenedPage.lastSavedIndex = this.mainEditor.core.history.stackIndex;
-      console.log(this.mainEditor.getContents(true));
       this.projectService.saveFile(this.currentOpenedPage!.path, this.mainEditor.getContents(true)).subscribe( res => {
         console.log('File', this.currentOpenedPage!.path, 'saved', res);
       })

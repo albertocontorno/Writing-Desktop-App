@@ -99,7 +99,6 @@ export class HierarchyMenuItemComponent implements OnInit {
       this.isInvalid = true;
       return;
     }
-    console.log(JSON.parse(JSON.stringify(this.hierarchyMenuService.filesIndex)))
     this.isInvalid = false;
   }
 
