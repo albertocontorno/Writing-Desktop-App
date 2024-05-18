@@ -27,9 +27,8 @@ export class HierarchyMenuService {
   private _files: ProjectFile[] = [];
   set files ( v: ProjectFile[]){
     this._files = v;
+    this.filesIndex = {};
     this.createFileIndex(this._files, this.filesIndex);
-    
-    console.log(this.filesIndex)
   }
   get files(){
     return this._files;
@@ -202,7 +201,6 @@ export class HierarchyMenuService {
       selectedItem.collapsed = false;
       this.expand(selectedItem);
       let parent = this.getFileItemFromIndex(selectedItem.path);
-      console.log('oooo')
       if(parent['new_file'] || parent['new_folder']){
         const n = '_' + getRandomInt(1, 10000);
         newItem.name += n;
@@ -219,7 +217,6 @@ export class HierarchyMenuService {
           this.filesIndex[this.getItemPathName(newItem.name)] = {item: newItem};
         } else {
           newItem.path = type === 'FILE' ? `${parent.item.path}/new_file` : `${parent.item.path}/new_folder`;
-          console.log('aaaaa')
           if(parent['new_file'] || parent['new_folder']){
             const n = '_' + getRandomInt(1, 10000);
             newItem.name += n;

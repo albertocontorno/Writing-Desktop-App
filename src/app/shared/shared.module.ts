@@ -38,6 +38,7 @@ import { AlertServiceService } from './services/alert-service.service';
 import { ExecutePipe } from './pipes/execute.pipe';
 import { NotesContainerComponent } from './components/writing-desktop/notes-container/notes-container.component';
 import { FormNoteComponent } from './components/writing-desktop/form-note/form-note.component';
+import { SafeHtmlPipe } from './pipes/safe-html.pipe';
 
 @NgModule({
   declarations: [
@@ -52,6 +53,7 @@ import { FormNoteComponent } from './components/writing-desktop/form-note/form-n
     ExecutePipe,
     NotesContainerComponent,
     FormNoteComponent,
+    SafeHtmlPipe,
   ],
   providers: [DialogService, MessageService, AlertServiceService, ConfirmationService],
   imports: [

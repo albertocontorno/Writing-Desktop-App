@@ -4,6 +4,17 @@
 :root{
   --selectionColor: red !important;
   --inlineSelectionColor: red !important;
+
+  --bg: #1c1c1c !important;
+  --bgDark: #161616 !important;
+  --bgAccent: #252525;
+  --textPrimary: #f8f8f8;
+
+  --btnBg:rgb(45, 45, 45);
+  --btnBgHover:rgb(65, 65, 65);
+  --btnBorder: rgb(55, 55, 55);
+
+  --navbarBg: var(--bgDark);
 }
 
 html, body{
@@ -22,15 +33,18 @@ body {
 }
 
 .title-bar{
-  background-color: #091a32;
+  background-color: var(--bgAccent) !important;
   color: white;
   font-weight: bold;
   padding: 0px 10px;
 }
 
-/* ol, ul {
-  color: black !important;
-} */
+/* OVERRIDES */
+
+.p-contextmenu{
+  background-color: var(--bgDark) !important;
+  border-color: var(--bgAccent) !important;
+}
 
 .p-contextmenu .p-menuitem-link{
   padding: 0.25rem 0.5rem !important;
@@ -57,32 +71,34 @@ body {
   color: black !important;
 }
 
-.p-panel.p-panel-toggleable .p-panel-header{
-  padding: 0.25rem 0.75rem !important;
-  border-radius: 0 !important;
-  background-color: #1d1d1d;
-}
-
-.p-panel .p-panel-content{
-  padding: 0.75rem !important;
-  border-radius: 0 !important;
-}
-
 .p-menubar{
   border-radius: 0 !important;
   padding: 0.25rem !important;
+  background-color: var(--bgDark) !important;
+  border: none !important;
+  border-bottom: 1px solid black;
 }
+.p-menubar .p-submenu-list{
+  background-color: var(--bgDark) !important;
+  border-color: var(--bgAccent) !important;
+}
+
 .p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-link{
   padding: 0.25rem !important;
 }
 
-.p-menubar .p-menuitem{
-  margin-right: 10px !important;
+.p-menu.p-menu-overlay{
+  background-color: var(--bgDark) !important;
+  border-color: var(--bgAccent) !important;
 }
 
+
+/* TREE */
 .p-tree{
   border-radius: 3px!important;
   padding: 0.25rem!important;
+  background-color: var(--bg) !important;
+  border-color: var(--bgAccent)  !important;
 }
 
 .p-tree .p-tree-container .p-treenode .p-treenode-content {
@@ -90,21 +106,118 @@ body {
   border-radius: 3px!important;
 }
 
+.p-tree .p-tree-container .p-treenode .p-treenode-content.p-highlight {
+  background: rgb(255 255 255 / 8%) !important;
+}
+
+.p-tree .p-tree-container .p-treenode .p-treenode-content:focus {
+  box-shadow: inset 0 0 0 0.15rem rgb(28 28 28 / 50%) !important;
+}
+
+.p-tree .p-tree-container .p-treenode .p-treenode-content .p-tree-toggler:focus{
+  box-shadow: 0 0 0 0.2rem rgb(255 255 255 / 50%);
+}
+
 
 /* SPLITTER */
 .p-splitter{
   border-radius: 0 !important;
+  background-color: var(--bg) !important;
+  border-color: var(--bgAccent) !important;
 }
 
 .p-scrollpanel-bar{
   border-radius: 0px !important;
 }
 
+.p-splitter .p-splitter-gutter .p-splitter-gutter-handle{
+  background-color: var(--bgDark) !important;
+}
 
+.p-splitter .p-splitter-gutter-resizing{
+  background-color: var(--bgAccent)  !important;
+}
 
-/* .p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-link .p-menuitem-icon {
-  margin-right: 0rem !important;
-} */
+/* PANEL */
+
+.p-panel .p-panel-header{
+  border: none !important;
+}
+
+.p-panel .p-panel-content{
+  background-color: var(--bgDark) !important;
+  border: none !important;
+  padding: 0.75rem !important;
+  border-radius: 0 !important;
+}
+
+.p-panel.p-panel-toggleable .p-panel-header{
+  padding: 0.25rem 0.75rem !important;
+  border-radius: 0 !important;
+  background-color: #1d1d1d;
+}
+
+.p-panel .p-panel-header .p-panel-header-icon:focus{
+  box-shadow: 0 0 0 0.2rem rgb(255 255 255 / 50%) !important;
+}
+
+.p-overlaypanel{
+  background-color: var(--bgDark) !important;
+  border-color: var(--bgAccent) !important;
+}
+
+/* DIALOG */
+.p-dialog{
+  border-color: var(--bgAccent) !important;
+}
+
+.p-dialog .p-dialog-header{
+  background-color: var(--bgDark) !important;
+}
+
+.p-dialog .p-dialog-content{
+  background-color: var(--bgDark) !important;
+}
+
+.p-dialog .p-dialog-footer{
+  background-color: var(--bgDark) !important;
+}
+
+/* INPUTS */
+.p-inputtext{
+  background-color: var(--bgDark) !important;
+  border-color: var(--bgAccent) !important;
+}
+
+.p-inputtext:enabled:focus{
+  box-shadow: 0 0 0 0.2rem rgb(255 255 255 / 25%) !important;
+}
+
+/* CONFIRM POPUP */
+.p-confirm-popup{
+  background-color: var(--bgDark) !important;
+  border-color: var(--bgAccent) !important;
+}
+
+/* BUTTONS */
+.p-button{
+  background-color: var(--btnBg) !important;
+  color: var(--textPrimary) !important;
+  border-color: var(--btnBorder) !important;
+}
+
+.p-button:focus{
+  box-shadow: 0 0 0 2px #1c2127, 0 0 0 4px rgb(255 255 255 / 70%), 0 1px 2px 0 rgba(0, 0, 0, 0) !important;
+}
+
+.p-button:enabled:active, .p-button:enabled:hover{
+  background-color: var(--btnBgHover) !important;
+}
+
+.p-button.p-button-text{
+  color: var(--textPrimary) !important;
+}
+
 
 /* ================================ UTILS ================================*/
 
@@ -128,19 +241,7 @@ body {
   transition: transform 300ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-/****************************/
-.ce-inline-toolbar{
-  color: black;
-}
-
-.ce-toolbar__plus, .ce-toolbar__settings-btn{
-  color: white;
-}
-
-.ce-toolbar__plus:hover, .ce-toolbar__settings-btn:hover {
-  background-color: #4d4d4d;
-}
-
+/************ EDITOR OVERRIDES ****************/
 .ed-reference{
   text-decoration: underline;
   text-decoration-style: dashed;
@@ -151,15 +252,8 @@ body {
 
 .referenceOverlay{
   min-width: 850px;
+  max-width: 60vw;
 }
-
-/* .ce-block__content{
-  max-width: 750px;
-}
-
-.ce-toolbar__actions {
-  padding-right: 50px;
-} */
 
 .codex-editor ::-moz-selection {
   background-color: #415668;
@@ -167,4 +261,69 @@ body {
 
 .codex-editor ::selection {
   background-color: #415668;
+}
+
+
+// SUN EDITOR
+.sun-editor button {
+  color: #ddd !important;
+}
+
+.sun-editor-editable{
+  background-color: #1e1e1e !important;
+  color: #ddd !important;
+}
+
+.sun-editor .se-btn-list:disabled, .sun-editor .se-btn:disabled, .sun-editor button:disabled {
+  color: #5c5c5c !important;
+}
+
+.sun-editor .se-btn-list:disabled, .sun-editor .se-btn:disabled, .sun-editor button:disabled {
+  background-color: #141414 !important;
+}
+
+.sun-editor .se-btn:enabled:focus, .sun-editor .se-btn:enabled:hover {
+  background-color: #3e3e3e !important;
+  outline: 0 none;
+}
+
+.sun-editor .se-btn:enabled.active {
+  color: #d1d1d1;
+  background-color: #2a2a2a !important;
+  border: 1px solid #ccc;
+}
+
+.sun-editor .se-toolbar{
+  background-color: #141414 !important;
+  outline: none !important;
+  border-bottom: 1px solid #ccc;
+}
+
+.sun-editor {
+  border: none !important;
+  margin: 0 auto;
+  display: flex;
+}
+
+.sun-editor .se-resizing-bar{
+  background-color: #141414 !important;
+  color: #ddd !important;
+  border-top: 1px solid #ccc;
+}
+
+
+.sun-editor-editable::-webkit-scrollbar {
+  width: 10px; /* Mostly for vertical scrollbars */
+  height: 10px; /* Mostly for horizontal scrollbars */
+}
+.sun-editor-editable::-webkit-scrollbar-thumb { /* Foreground */
+  background: #070707;
+}
+.sun-editor-editable::-webkit-scrollbar-track { /* Background */
+  background: rgb(34, 34, 34);
+}
+
+.sun-editor-editable{
+  word-wrap: break-word !important;
+  word-break: break-all !important;
 }

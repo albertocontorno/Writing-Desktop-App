@@ -1,2 +1,5 @@
 
-<div [id]="id" #holder class="editor-container" [ngStyle]="{'max-height': maxHeightStyle}"></div>
+<!-- <div [id]="id" #holder class="editor-container" [ngStyle]="{'max-height': maxHeightStyle}"></div>
+ -->
+<div [id]="'editor-tools-' + id" class="sun-editor"></div>
+<textarea [id]="id" #holder>Write something...</textarea>

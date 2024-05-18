@@ -45,7 +45,6 @@ export class FormCreateProjectComponent {
         path: this.form.value.directory!
       };
       this.electronService.getFolderContent(value.path).subscribe( (r: FileSystemElement[]) => {
-        console.log(r);
         if(r.find( f => f.name === 'wa_project.json')){
           this.showMessages = true;
         } else {

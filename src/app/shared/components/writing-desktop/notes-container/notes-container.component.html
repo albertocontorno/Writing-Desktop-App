@@ -8,7 +8,7 @@
 
       <!-- <app-text-editor [blocks]="note!.blocks!"></app-text-editor> -->
       <p *ngIf="!note.data">Loading content...</p>
-      <div *ngIf="note.data" [innerHTML]="note.data | execute : toHtml"></div>
+      <div *ngIf="note.data" [innerHTML]="note.data | safeHtml"></div>
       <ng-template pTemplate="icons">
         <button pButton class="p-panel-header-icon p-link" (click)="openMenu($event, menu, i)">
             <span class="pi pi-cog"></span>

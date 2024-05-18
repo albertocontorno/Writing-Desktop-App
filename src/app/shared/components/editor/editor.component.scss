@@ -1,18 +1,2 @@
-.editor-container{
-  max-height: calc(100vh - 103px);
-  overflow-y: auto;
 
-  /* Foreground, Background */
-  scrollbar-color: #0b213f transparent;
-}
 
-.editor-container::-webkit-scrollbar {
-  width: 10px; /* Mostly for vertical scrollbars */
-  height: 10px; /* Mostly for horizontal scrollbars */
-}
-.editor-container::-webkit-scrollbar-thumb { /* Foreground */
-  background: #0b213f;
-}
-.editor-container::-webkit-scrollbar-track { /* Background */
-  background: transparent;
-}
