@@ -4,6 +4,12 @@
 :root{
   --selectionColor: red !important;
   --inlineSelectionColor: red !important;
+
+  --bg: #1c1c1c !important;
+  --bgDark: #161616 !important;
+  --bgAccent: #252525;
+
+  --navbarBg: var(--bgDark);
 }
 
 html, body{
@@ -22,7 +28,7 @@ body {
 }
 
 .title-bar{
-  background-color: #091a32;
+  background-color: var(--bgAccent) !important;
   color: white;
   font-weight: bold;
   padding: 0px 10px;
@@ -31,6 +37,10 @@ body {
 /* ol, ul {
   color: black !important;
 } */
+.p-contextmenu{
+  background-color: var(--bgDark) !important;
+  border-color: var(--bgAccent) !important;
+}
 
 .p-contextmenu .p-menuitem-link{
   padding: 0.25rem 0.5rem !important;
@@ -71,18 +81,28 @@ body {
 .p-menubar{
   border-radius: 0 !important;
   padding: 0.25rem !important;
+  background-color: var(--bgDark) !important;
+  border: none !important;
+  border-bottom: 1px solid black;
 }
+.p-menubar .p-submenu-list{
+  background-color: var(--bgDark) !important;
+  border-color: var(--bgAccent) !important;
+}
+
 .p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-link{
   padding: 0.25rem !important;
 }
 
-.p-menubar .p-menuitem{
+/* .p-menubar .p-menuitem{
   margin-right: 10px !important;
-}
+} */
 
 .p-tree{
   border-radius: 3px!important;
   padding: 0.25rem!important;
+  background-color: var(--bg) !important;
+  border-color: var(--bgAccent)  !important;
 }
 
 .p-tree .p-tree-container .p-treenode .p-treenode-content {
@@ -90,16 +110,61 @@ body {
   border-radius: 3px!important;
 }
 
+.p-tree .p-tree-container .p-treenode .p-treenode-content.p-highlight {
+  background: rgb(255 255 255 / 8%) !important;
+}
+
+.p-tree .p-tree-container .p-treenode .p-treenode-content:focus {
+  box-shadow: inset 0 0 0 0.15rem rgb(28 28 28 / 50%) !important;
+}
+
 
 /* SPLITTER */
 .p-splitter{
   border-radius: 0 !important;
+  background-color: var(--bg) !important;
+  border-color: var(--bgAccent) !important;
 }
 
 .p-scrollpanel-bar{
   border-radius: 0px !important;
 }
 
+.p-splitter .p-splitter-gutter .p-splitter-gutter-handle{
+  background-color: var(--bgDark) !important;
+}
+
+.p-splitter .p-splitter-gutter-resizing{
+  background-color: var(--bgAccent)  !important;
+}
+
+/* PANEL */
+
+.p-panel .p-panel-header{
+  border: none !important;
+}
+
+.p-panel .p-panel-content{
+  background-color: var(--bgDark) !important;
+  border: none !important;
+}
+
+/* DIALOG */
+.p-dialog{
+  border-color: var(--bgAccent) !important;
+}
+
+.p-dialog .p-dialog-header{
+  background-color: var(--bgDark) !important;
+}
+
+.p-dialog .p-dialog-content{
+  background-color: var(--bgDark) !important;
+}
+
+.p-dialog .p-dialog-footer{
+  background-color: var(--bgDark) !important;
+}
 
 
 /* .p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-link .p-menuitem-icon {
