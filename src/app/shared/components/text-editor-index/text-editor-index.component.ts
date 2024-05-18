@@ -14,7 +14,7 @@ import SunEditor from 'suneditor/src/lib/core';
 })
 export class TextEditorIndexComponent {
   _editor: any;
-  @Input() set blocks(v: SunEditor){
+  @Input() set editor(v: SunEditor){
     this._editor = v;
     this.computeChanges();
   }
@@ -39,76 +39,43 @@ export class TextEditorIndexComponent {
     this._editor?.getContext?.().element.editorArea.querySelectorAll('h1, h2').forEach( h1 => {
       if(h1.tagName === 'H1'){
         current = {
-          label: h1.textContent?.replace(/<([^<]*)>|<(\/[^<]*)>/g, ''),
+          label: this.extratText(h1.textContent),
           data: h1,
           children: [],
           expanded: true,
           expandedIcon: ''
-          /* class: h1.tagName.toLowerCase()  */
         };
         this.index.push(current);
       } else if(h1.tagName === 'H2'){
         let h2 = {
-          label: h1.textContent?.replace(/<([^<]*)>|<(\/[^<]*)>/g, ''),
+          label: this.extratText(h1.textContent),
           data: h1,
           children: []
-          /* class: h1.tagName.toLowerCase()  */
         };
         if(current){
           current.children!.push({
-            label: h1.textContent?.replace(/<([^<]*)>|<(\/[^<]*)>/g, ''),
+            label: this.extratText(h1.textContent),
             data: h1,
             children: []
-            /* class: h1.tagName.toLowerCase()  */
           });
         } else {
           this.index.push(h2);
         }
       } else {
         this.index.push({
-          label: h1.textContent?.replace(/<([^<]*)>|<(\/[^<]*)>/g, ''),
+          label: this.extratText(h1.textContent),
           data: h1,
           children: []
-          /* class: h1.tagName.toLowerCase()  */
         });
       }
     });
-    this.cdRef.markForCheck();
   }
 
   private createIndex(){
 
   }
-
-  private moveIndexEntry(blockId: string, api: any){
-    const blockIndex = api.blocks.getBlockIndex(blockId);
-    const blockInIndexPos = this.index.findIndex( e => e.data!.id === blockId )!;
-    const blockToMove = this.index[blockInIndexPos];
-    this.index.splice(blockInIndexPos, 1);
-    let isInserted = false;
-    for (let i = 0; i < this.index.length; i++) {
-      const element = this.index[i];
-      const elementIndex = api.blocks.getBlockIndex(element.data!.id);
-      if(elementIndex >= blockIndex){
-        this.index.splice(i, 0, blockToMove);
-        isInserted = true;
-        break;
-      }
-    }
-    if(!isInserted){
-      this.index.push(blockToMove);
-    }
-  }
-
   private extratText(text: string){
     return text?.replace(/<([^<]*)>|<(\/[^<]*)>/g, '');
-  }
-
-  private createEntry(text: string, id: string){
-    return {
-      label: this.extratText(text),
-      data: { id }
-    }
   }
 
   onSelection(e){

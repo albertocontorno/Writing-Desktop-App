@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { ProjectService } from '../../services/project.service';
 import { Project, ProjectFile, ProjectNote } from '../../models/project.model';
 import { EditorService } from '../../services/editor.service';
@@ -52,7 +52,7 @@ export class WritingDesktopComponent {
   openedFilesMaps: {[key: string]: OpenedPage} = {};
   hierarchyMenuService: HierarchyMenuService;
   @ViewChild('referenceOP') referenceOP;
-  constructor(private projectService: ProjectService, private editorService: EditorService){
+  constructor(private projectService: ProjectService, private editorService: EditorService, private cdRef: ChangeDetectorRef){
     this.projectService.onChange$.subscribe( changes => {
       this.currentOpenedPage = undefined;
       this.openedFiles = [];
@@ -180,6 +180,7 @@ export class WritingDesktopComponent {
 
   onMainEditorReady(editor: SunEditor){
     this.mainEditor = editor;
+    this.cdRef.detectChanges();
   }
 
   onReferenceSelected(reference){

@@ -19,7 +19,7 @@
         <app-text-editor-index
           *ngIf="currentOpenedPage"
           style="width: 100%;"
-          [blocks]="mainEditor"
+          [editor]="mainEditor"
           (nodeSelected)="onNodeSelected($event)"
       ></app-text-editor-index>
       </ng-template>
