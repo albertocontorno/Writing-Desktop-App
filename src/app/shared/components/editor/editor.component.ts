@@ -33,9 +33,9 @@ export class EditorComponent implements OnInit {
   ngOnChanges(changes: SimpleChanges){
     if(changes.data && !changes.data.firstChange){
       if(!changes.data.currentValue){
-        this.editor.setContents(changes.data.currentValue);
+        this.editor.setContents(changes.data.currentValue, true);
       } else {
-        this.editor.setContents(changes.data.currentValue);
+        this.editor.setContents(changes.data.currentValue, true);
       }
       const prevHistory = this.editorService.getHistory(changes.pageId.currentValue);
       if(prevHistory){
@@ -86,10 +86,6 @@ export class EditorComponent implements OnInit {
             'reference'
           ]
       ],
-      /* width: '1000px',
-      maxWidth: '1200px',
-      minWidth: '600px', */
-      /* maxWidth: '60%', */
       width: 'auto',
       maxWidth: 'auto',
       maxHeight: 'calc(100vh - 200px)',
@@ -105,9 +101,6 @@ export class EditorComponent implements OnInit {
       console.log('onSave', contents);
       (this.editor.core as any)._variable.isChanged = false;
     };
-    /* this.editor.getContext().element.editorArea.querySelectorAll('[de-reference]').forEach( ref => {
-      ref.addEventListener('click', (e) => this.projectService.openReference$.next(e));
-    }); */
     this.editor.getContext().element.editorArea.addEventListener('click', (e) => {
       const t: HTMLElement = e.target as HTMLElement;
       const event: PointerEvent = e as PointerEvent;

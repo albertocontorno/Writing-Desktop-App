@@ -35,13 +35,13 @@ export class ProjectService {
 
   saveProjectAsync(){
     return this.electronService.writeFile(`${this.project.rootPath}\\${ProjectConstants.PROJECT_JSON}`, JSON.stringify(this.project))
-      .pipe(tap(() => this.notifyChanges()));
+      /* .pipe(tap(() => this.notifyChanges())); */
   }
 
   saveProject(){
     this.electronService.writeFile(`${this.project.rootPath}\\${ProjectConstants.PROJECT_JSON}`, JSON.stringify(this.project)).subscribe( res => {
       console.log('project saved');
-      this.notifyChanges();
+      /* this.notifyChanges(); */
     });
   }
   
