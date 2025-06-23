@@ -116,7 +116,7 @@ export class ProjectService {
         data
       }).pipe(
         concatMap( res => {
-        this.project.notes.push(note);
+        this.project.notes = [...this.project.notes, note];
         return this.saveProjectAsync();
         })
       );

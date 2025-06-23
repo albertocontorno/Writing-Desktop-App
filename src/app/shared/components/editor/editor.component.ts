@@ -32,11 +32,8 @@ export class EditorComponent implements OnInit {
 
   ngOnChanges(changes: SimpleChanges){
     if(changes.data && !changes.data.firstChange){
-      if(!changes.data.currentValue){
-        this.editor.setContents(changes.data.currentValue, true);
-      } else {
-        this.editor.setContents(changes.data.currentValue, true);
-      }
+      this.editor.setContents(changes.data.currentValue, true);
+      this.editorService.onChanges$.next({});
       const prevHistory = this.editorService.getHistory(changes.pageId.currentValue);
       if(prevHistory){
         this.editor.core.history.setStack(prevHistory.stack);

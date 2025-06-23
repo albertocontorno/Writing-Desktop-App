@@ -100,6 +100,7 @@ export class WritingDesktopComponent {
   }
 
   async openItem(item){
+    console.log('open item', item);
     const fileInTabs = this.openedFiles.find( f => f.id === item.id );
     if(fileInTabs){
       this.currentOpenedPage = this.openedFilesMaps[fileInTabs.id];
@@ -162,6 +163,7 @@ export class WritingDesktopComponent {
       if(this.currentOpenedPage.id === item.id){
         return;
       }
+      console.log('open file', item, this.currentOpenedPage ,item.id);
       let editorData = this.mainEditor.getContents(true);
       this.editorService.addHistory(this.currentOpenedPage.id, this.getCurrentHistory());
       this.currentOpenedPage.data = editorData;
@@ -178,6 +180,7 @@ export class WritingDesktopComponent {
   }
 
   onMainEditorReady(editor: SunEditor){
+    console.log('main editor ready', editor);
     this.mainEditor = editor;
     this.cdRef.detectChanges();
   }

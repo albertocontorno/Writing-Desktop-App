@@ -69,6 +69,7 @@ export class TextEditorIndexComponent {
         });
       }
     });
+    this.cdRef.detectChanges();
   }
 
   private createIndex(){
