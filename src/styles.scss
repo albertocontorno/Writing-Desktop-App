@@ -266,12 +266,12 @@ body {
 
 // SUN EDITOR
 .sun-editor button {
-  color: #ddd !important;
+  color: var(--textPrimary) !important;
 }
 
 .sun-editor-editable{
   background-color: #1e1e1e !important;
-  color: #ddd !important;
+  color: var(--textPrimary) !important;
 }
 
 .sun-editor .se-btn-list:disabled, .sun-editor .se-btn:disabled, .sun-editor button:disabled {
@@ -303,11 +303,12 @@ body {
   border: none !important;
   margin: 0 auto;
   display: flex;
+  color: var(--textPrimary) !important;
 }
 
 .sun-editor .se-resizing-bar{
   background-color: #141414 !important;
-  color: #ddd !important;
+  color: var(--textPrimary) !important;
   border-top: 1px solid #ccc;
 }
 
@@ -326,4 +327,90 @@ body {
 .sun-editor-editable{
   word-wrap: break-word !important;
   word-break: break-all !important;
+}
+
+.sun-editor .se-controller.se-controller-table{
+  background-color: #141414 !important;
+}
+
+.sun-editor{
+  .se-controller.se-controller-table{
+    background-color: #141414 !important;
+  }
+  .se-controller.se-controller-table-cell{
+    background-color: #141414 !important;
+  }
+  .se-controller.se-controller-table-cell .se-arrow.se-arrow-up:after{
+    border-color: #141414 !important;
+  }
+
+  .sun-editor-editable table th{
+    background-color: var(--textPrimary);
+    color: #141414;
+  }
+
+  .se-submenu.se-selector-table{
+    background-color: #141414 !important;
+    border: 1px solid var(--textPrimary);
+  }
+
+  .se-dialog .se-dialog-inner .se-dialog-content{
+    background-color: #141414 !important;
+  }
+  .se-btn:enabled.on{
+    background-color: #3e3e3e !important;
+  }
+  .se-dialog-tabs button{
+    background-color: var(--blue-600) !important;
+  }
+  .se-dialog-tabs button.active{
+    background-color: var(--blue-400) !important;
+    color: #141414 !important;
+  }
+
+  label{
+    color: inherit !important;
+  }
+
+  button.se-btn-primary{
+    background-color: var(--blue-600);
+    border-color: var(--blue-400);
+    &:hover{
+      background-color: var(--blue-400);
+      border-color: var(--blue-400);
+    }
+  }
+
+  input{
+    color: var(--textPrimary) !important;
+  }
+
+  .se-list-layer{
+    background-color: #141414 !important;
+    &.se-list-format ul h1{
+      color: var(--textPrimary) !important;
+    }
+    &.se-list-format ul h2{
+      color: var(--textPrimary) !important;
+    }
+    &.se-list-format ul h3{
+      color: var(--textPrimary) !important;
+    }
+    &.se-list-format ul h4{
+      color: var(--textPrimary) !important;
+    }
+    &.se-list-format ul h5{
+      color: var(--textPrimary) !important;
+    }
+    &.se-list-format ul h6{
+      color: var(--textPrimary) !important;
+    }
+    .se-btn-list.default_value{
+      background-color: #141414 !important;
+    }
+  }
+
+  .se-btn-list:focus, .se-btn-list:hover{
+    background-color: var(--btnBgHover) !important;
+  }
 }

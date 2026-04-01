@@ -83,7 +83,9 @@ export class WritingDesktopComponent {
 
   saveKeyDown = (e) => {
     if(e.ctrlKey && (e.key === 's' || e.key === 'S')){
-      this.saveCurrentPage()
+      e.preventDefault();
+      e.stopPropagation();
+      this.saveCurrentPage();
     }
   }
 

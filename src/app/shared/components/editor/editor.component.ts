@@ -20,6 +20,7 @@ export class EditorComponent implements OnInit {
 
   @Output() editorReady: EventEmitter<SunEditor> = new EventEmitter();
   @Output() dataChanged: EventEmitter<DataChangeEvent> = new EventEmitter();
+  @Output() editorSave: EventEmitter<void> = new EventEmitter();
 
   editor: SunEditor;
 
@@ -87,21 +88,29 @@ export class EditorComponent implements OnInit {
       maxWidth: 'auto',
       maxHeight: 'calc(100vh - 200px)',
       minHeight: 'calc(100vh - 200px)',
+      callBackSave: (contents, core) => {
+        try {
+          (this.editor.core as any)._variable.isChanged = false;
+          this.editorSave.emit();
+        } catch (err) {
+          console.warn('callBackSave: unable to set isChanged false', err);
+        }
+      },
       /* maxHeight: this.maxHeightStyle,
       minHeight: this.maxHeightStyle */
     });
-    this.editor.onChange = (contents, core) => { 
-      console.log('onChange', contents);
+    this.editor.onChange = (contents, core) => {
       this.dataChanged.emit(contents);
     };
-    this.editor.onSave = (contents, core) => { 
-      console.log('onSave', contents);
+
+    this.editor.onSave = (contents, core) => {
       (this.editor.core as any)._variable.isChanged = false;
     };
+
     this.editor.getContext().element.editorArea.addEventListener('click', (e) => {
       const t: HTMLElement = e.target as HTMLElement;
       const event: PointerEvent = e as PointerEvent;
-      if(event.altKey &&t.attributes['de-reference']){
+      if(event.altKey && t.attributes['de-reference']){
         this.projectService.openReference$.next(event);
       }
     });
@@ -109,13 +118,7 @@ export class EditorComponent implements OnInit {
     
   }
 
-  save(){
-    
-  }
-
   ngOnDestroy(){
     this.editor.destroy();
-  }
-
-  
+  } 
 }
