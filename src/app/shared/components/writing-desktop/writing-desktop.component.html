@@ -97,3 +97,8 @@
   (close)="closeCreateNote()"
   [notes]="project.notes"
 ></app-form-note>
+
+<!-- FILE SEARCH -->
+ <p-dialog header="File Search" [(visible)]="isFileSearchVisibile" [style]="{width: '50vw'}" [modal]="true">
+  <app-file-search *ngIf="project" [files]="project.files" (onOpenFile)="openItem($event); isFileSearchVisibile = false"></app-file-search>
+</p-dialog>

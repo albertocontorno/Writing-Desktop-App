@@ -46,6 +46,7 @@ export class WritingDesktopComponent {
   mainEditor: SunEditor;
   editorMenu: MenuItem[] = [];
   isReferenceChooseVisible;
+  isFileSearchVisibile;
   selectedReference;
   currentReference;
   noteData: { visible: boolean, editor?: SunEditor, note?: ProjectNote } = { visible: false, editor: undefined, note: undefined };
@@ -296,8 +297,19 @@ export class WritingDesktopComponent {
         icon: PrimeIcons.PLUS,
         title: 'Add Note',
         id: 'ADD_NOTE'
+      },
+      {
+        label: 'File Search',
+        command: () => this.openFileSearch(),
+        icon: PrimeIcons.SEARCH,
+        title: 'File Search',
+        id: 'FILE_SEARCH',
       }
     ]
+  }
+
+  openFileSearch(){
+    this.isFileSearchVisibile = true
   }
 
   private atLeastOnePageHasChanges(){

@@ -1,0 +1,12 @@
+<form [formGroup]="form">
+    <div class="flex flex-column gap-2">
+        <label htmlFor="filename">File Name</label>
+        <input type="text" pInputText formControlName="filename" id="filename"/>
+    </div>
+</form>
+
+<div>
+    <div *ngFor="let file of filteredFiles" style="max-height: calc(100vh - 500px);">
+        <p-button (onClick)="openFile(file)" styleClass="p-button-text mt-2" [label]="file.name" link ></p-button>
+    </div>
+</div>

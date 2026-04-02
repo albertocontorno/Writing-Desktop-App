@@ -39,6 +39,7 @@ import { ExecutePipe } from './pipes/execute.pipe';
 import { NotesContainerComponent } from './components/writing-desktop/notes-container/notes-container.component';
 import { FormNoteComponent } from './components/writing-desktop/form-note/form-note.component';
 import { SafeHtmlPipe } from './pipes/safe-html.pipe';
+import { FileSearchComponent } from './components/file-search/file-search.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import { SafeHtmlPipe } from './pipes/safe-html.pipe';
     NotesContainerComponent,
     FormNoteComponent,
     SafeHtmlPipe,
+    FileSearchComponent,
   ],
   providers: [DialogService, MessageService, AlertServiceService, ConfirmationService],
   imports: [
@@ -109,7 +111,8 @@ import { SafeHtmlPipe } from './pipes/safe-html.pipe';
     ConfirmDialogModule,
     MessagesModule,
     MessageModule,
-    ToastModule
+    ToastModule,
+    FileSearchComponent,
   ],
 })
 export class SharedModule {}
