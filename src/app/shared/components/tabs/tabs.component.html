@@ -13,9 +13,10 @@
     cdkDragBoundary=".tab-container"
     cdkDragLockAxis="x"
   >
-    <div>{{ tab.name }}<span *ngIf="tab.hasChanges">*</span></div>
+    <div>{{ tab.name }}</div>
+    <span class="pi pi-circle-fill ml-1" style="font-size: 0.35rem;" [ngStyle]="{'opacity': tab.hasChanges ? 1 : 0}"></span>
     <div class="drag-preview" *cdkDragPreview >{{ tab.name }}</div>
-    <div class="ml-3 close-btn" (click)="closeTab(i, tab, $event)"><i class="pi pi-times" style="font-size: 0.75rem;"></i></div>
+    <div class="ml-2 close-btn" (click)="closeTab(i, tab, $event)"><i class="pi pi-times" style="font-size: 0.75rem;"></i></div>
     <p-confirmPopup></p-confirmPopup>
   </div>
 </div>

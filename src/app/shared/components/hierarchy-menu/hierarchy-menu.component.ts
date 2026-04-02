@@ -1,8 +1,9 @@
 import { MenuItem, PrimeIcons } from 'primeng/api';
 import { ProjectFile } from './../../models/project.model';
-import { Component, Input, OnInit, Output, EventEmitter, HostListener, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, HostListener, ViewChild, OnDestroy } from '@angular/core';
 import { HierarchyMenuService } from './hierarchy-menu.service';
 import { ProjectService } from '../../services/project.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-hierarchy-menu',
@@ -10,7 +11,7 @@ import { ProjectService } from '../../services/project.service';
   styleUrls: ['./hierarchy-menu.component.scss'],
   providers: [HierarchyMenuService]
 })
-export class HierarchyMenuComponent implements OnInit {
+export class HierarchyMenuComponent implements OnInit, OnDestroy {
   @Input() name: string = 'Test Project';
   @Input() updateCollapsedOnItem?: boolean = false;
   @Input() showContextMenu?: boolean = true;
@@ -34,6 +35,7 @@ export class HierarchyMenuComponent implements OnInit {
   @Output() openItem: EventEmitter<ProjectFile> = new EventEmitter();
   @Output() itemDeleted: EventEmitter<ProjectFile> = new EventEmitter();
   @Output() itemSelected: EventEmitter<ProjectFile | undefined> = new EventEmitter();
+  @Output() itemRenamed: EventEmitter<ProjectFile> = new EventEmitter();
 
   selectedItem?: ProjectFile;
   contextMenu: MenuItem[] = [
@@ -64,16 +66,19 @@ export class HierarchyMenuComponent implements OnInit {
         this.hierarchyMenuService.edit(this.selectedItem!);
       }
     }
-  ]
+  ];
+
+  onDestroy$ = new Subject<void>();
 
   @ViewChild('hierarchyItems') hierarchyItems;
 
   constructor(private hierarchyMenuService: HierarchyMenuService, private projectService: ProjectService) {
-    this.hierarchyMenuService.itemSelected$.subscribe( item => {
+    this.hierarchyMenuService.itemSelected$.pipe(takeUntil(this.onDestroy$)).subscribe( item => {
       this.selectedItem = item;
       this.itemSelected.next(this.selectedItem) 
     });
-    this.hierarchyMenuService.openItem$.subscribe( item => this.openItem.next(item) );
+    this.hierarchyMenuService.openItem$.pipe(takeUntil(this.onDestroy$)).subscribe( item => this.openItem.next(item) );
+    this.hierarchyMenuService.itemRenamed$.pipe(takeUntil(this.onDestroy$)).subscribe( item => this.itemRenamed.next(item) );
   }
 
   ngOnInit(): void {
@@ -108,6 +113,10 @@ export class HierarchyMenuComponent implements OnInit {
 
   onContainerClicked(){
     this.hierarchyMenuService.selectItem(undefined);
+  }
+
+  ngOnDestroy(): void {
+    this.onDestroy$.next();
   }
 
 }

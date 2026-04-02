@@ -31,4 +31,9 @@ export class EditorService {
     return this.histories[fileId];
   }
 
+  moveHistory(fromId: string, toId: string){
+    this.histories[toId] = this.histories[fromId];
+    delete this.histories[fromId];
+  }
+
 }

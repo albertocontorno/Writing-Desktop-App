@@ -1,9 +1,10 @@
 .plus-icon{
   position: absolute;
-  top: 11px;
-  right: -1px;
+  top: 9px;
+  right: -3px;
   font-size: 10px;
-  background-color: #091a32;
+  background-color: var(--bgAccent);
+  padding: 1px;
 }
 
 ::ng-deep app-hierarchy-menu .p-scrollpanel-content {

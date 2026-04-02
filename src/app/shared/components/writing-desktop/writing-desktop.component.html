@@ -1,16 +1,17 @@
 <p-splitter  *ngIf="project" [style]="{'height': 'calc(100vh - 34px)'}" [panelSizes]="[25,75]" [minSizes]="[15,75]">
   <ng-template pTemplate>
     <p-splitter [style]="{'height': 'calc(100vh - 35px)'}" [panelSizes]="[50,50]" [minSizes]="[20,20]">
-
       <!-- FILES -->
       <ng-template pTemplate>
         <app-hierarchy-menu 
           style="width: 100%;"
           [items]="project.files"
+          [name]="project.name"
           [updateCollapsedOnItem]="true"
           (init)="onHierarchyMenuInit($event)"
           (openItem)="openItem($event)"
           (itemDeleted)="onItemDeleted($event)"
+          (itemRenamed)="onItemRenamed($event)"
         ></app-hierarchy-menu>
       </ng-template>
 

@@ -48,6 +48,12 @@ body {
 
 .p-contextmenu .p-menuitem-link{
   padding: 0.25rem 0.5rem !important;
+  
+}
+.p-menubar .p-menuitem{
+  border-radius: 3px;
+  margin: 0 1px;
+  border: 1px solid #424242;
 }
 .p-overlaypanel .p-overlaypanel-content {
   padding: 0.5rem !important;

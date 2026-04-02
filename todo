@@ -1,7 +1,4 @@
 // BUG When a file is renamed this is not matched in the opened files (if the file is opened)
-// TODO When naming/renaming a file trying to select with the mouse will try to move the file and not to select the text in the input field
 // BUG Somethings a file is removed from the index of files and so it is not shown in the explorer anymore (to restore it is necessary to manually open the project json and add it again)
 // TODO I will be good to have the option to toggle the notes/index/explorer sections on and off
-// TODO Find better icons
-// TODO Add functionality to search the files by name
 // TODO Add functionality to search files by content (full text search in the files)

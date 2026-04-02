@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, ViewChild } from '@angular/core';
 import { ProjectService } from '../../services/project.service';
 import { Project, ProjectFile, ProjectNote } from '../../models/project.model';
 import { EditorService } from '../../services/editor.service';
@@ -8,6 +8,7 @@ import { generateUUID } from '../../utils/utils';
 import { HierarchyMenuService } from '../hierarchy-menu/hierarchy-menu.service';
 import SunEditor from 'suneditor/src/lib/core';
 import { MenuItem, PrimeIcons } from 'primeng/api';
+import { Subject, takeUntil } from 'rxjs';
 
 interface OpenedPage {
   id: string,
@@ -24,7 +25,7 @@ interface OpenedPage {
   templateUrl: './writing-desktop.component.html',
   styleUrls: ['./writing-desktop.component.scss']
 })
-export class WritingDesktopComponent {
+export class WritingDesktopComponent implements OnDestroy{
   JSON = JSON;
   generateUUID = generateUUID;
   project: Project;
@@ -52,6 +53,7 @@ export class WritingDesktopComponent {
   noteData: { visible: boolean, editor?: SunEditor, note?: ProjectNote } = { visible: false, editor: undefined, note: undefined };
   openedFilesMaps: {[key: string]: OpenedPage} = {};
   hierarchyMenuService: HierarchyMenuService;
+  onDestroy$ = new Subject<void>();
   @ViewChild('referenceOP') referenceOP;
   constructor(private projectService: ProjectService, private editorService: EditorService, private cdRef: ChangeDetectorRef){
     this.projectService.onChange$.subscribe( changes => {
@@ -64,14 +66,13 @@ export class WritingDesktopComponent {
       this.noteData = { visible: false, editor: undefined, note: undefined };
       this.project = changes.project!;
     });
-    this.projectService.chooseReference$.subscribe( isOpen => {
+    this.projectService.chooseReference$.pipe(takeUntil(this.onDestroy$)).subscribe( isOpen => {
       this.isReferenceChooseVisible = isOpen;
     });
     this.projectService.openReference$.subscribe( e => {
       this.openReference(e);
     });
-
-    this.projectService.referenceSelected$.subscribe( reference => {
+    this.projectService.referenceSelected$.pipe(takeUntil(this.onDestroy$)).subscribe( reference => {
       const referenceTool = this.projectService.currentReferenceRange.plugins['reference'];
       referenceTool.apply(this.projectService.currentReferenceRange, reference.path);
       this.projectService.currentReferenceRange = undefined;
@@ -130,6 +131,14 @@ export class WritingDesktopComponent {
 
   onItemDeleted(item: ProjectFile){
     this.closeFile({tab: item as any});
+  }
+
+  onItemRenamed(item: ProjectFile){
+    const file = this.openedFilesMaps[item.id];
+    if(file){
+      file.name = item.name;
+      file.path = item.path;
+    }
   }
 
   onNodeSelected(node){
@@ -318,6 +327,7 @@ export class WritingDesktopComponent {
 
   ngOnDestroy(){
     document.removeEventListener('keydown', this.saveKeyDown);
+    this.onDestroy$.next();
   }
 
 }

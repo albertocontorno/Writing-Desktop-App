@@ -3,16 +3,16 @@
     <span>{{name}}</span>
     <span class="inline-block" style="float: right">
       <ng-container *ngIf="showAddActions">
-        <div class="inline-block cursor-pointer relative mr-1" (click)="addFolder()">
+        <div class="inline-block cursor-pointer relative mr-1" (click)="addFolder()" role="button" tabindex="0" title="Add folder">
           <i class="pi pi-folder cursor-pointer"></i>
           <i class="pi pi-plus plus-icon"></i>
         </div>
-        <div class="inline-block cursor-pointer relative mr-1" (click)="addFile()">
+        <div class="inline-block cursor-pointer relative mr-1" (click)="addFile()" role="button" tabindex="0" title="Add file">
           <i class="pi pi-file cursor-pointer"></i>
           <i class="pi pi-plus plus-icon"></i>
         </div>
       </ng-container>
-      <i class="pi pi-clone cursor-pointer" (click)="collapseAll()"></i>
+      <i class="pi pi-clone cursor-pointer" (click)="collapseAll()" role="button" tabindex="0" title="Collapse all"></i>
     </span>
   </div>
   <p-scrollPanel [style]="{width: '100%', height: 'calc(100vh - 34px - 22px)'}" >

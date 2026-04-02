@@ -15,6 +15,7 @@ export class HierarchyMenuService {
   toggleItem$: Subject<{item: ProjectFile | null, state: boolean}> = new Subject();
   editItem$: Subject<ProjectFile> = new Subject();
   openItem$: Subject<ProjectFile> = new Subject();
+  itemRenamed$: Subject<ProjectFile> = new Subject();
   draggingInfo$: Subject<DragginInfo> = new Subject();
   itemDragged?: ProjectFile;
 
@@ -24,6 +25,7 @@ export class HierarchyMenuService {
   editingItem?: ProjectFile;
 
   filesIndex: any/* {[key: string]: ProjectFile} */ = {};
+  isCreatingNew = false;
   private _files: ProjectFile[] = [];
   set files ( v: ProjectFile[]){
     this._files = v;
@@ -57,7 +59,7 @@ export class HierarchyMenuService {
   expandAll(){
     this.toggleItem$.next({item: null, state: false});
   }
-  isCreatingNew = false;
+  
   edit(item: ProjectFile, isCreatingNew: boolean = false){
     this.editItem$.next(item);
     this.editingItem = item;
@@ -301,6 +303,7 @@ export class HierarchyMenuService {
       parent[this.getItemPathName(newName)] = oldIndexed ? oldIndexed : {item};
       this.updateItemPath(item);
       console.log(this.files, this.filesIndex);
+      this.itemRenamed$.next(item);
       return true;
     }
     return false;
