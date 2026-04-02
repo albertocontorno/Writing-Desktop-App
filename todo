@@ -1,4 +1,3 @@
-// BUG When a file is renamed this is not matched in the opened files (if the file is opened)
 // BUG Somethings a file is removed from the index of files and so it is not shown in the explorer anymore (to restore it is necessary to manually open the project json and add it again)
 // TODO I will be good to have the option to toggle the notes/index/explorer sections on and off
 // TODO Add functionality to search files by content (full text search in the files)
